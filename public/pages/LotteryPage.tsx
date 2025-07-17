@@ -111,22 +111,17 @@ export const LotteryPage = () => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        const finalRotation = (startRotation + spinSpeed * (duration / 1000));
-        const pointerAngle = (finalRotation + 270) % 360;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-        let accumulatedAngle = 0;
-        let selectedWinner: Contestant | null = null;
+        const pointerY = 35;
+        const pointerX = canvas.width / 2;
+        const pixel = ctx.getImageData(pointerX, pointerY, 1, 1).data;
+        const color = getHexColor([pixel[0], pixel[1], pixel[2]]);
 
-        for (const contestant of contestants) {
-          const segmentAngle = (contestant.percent / 100) * 360;
-          const endAngle = accumulatedAngle + segmentAngle;
-
-          if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
-            selectedWinner = contestant;
-            break;
-          }
-          accumulatedAngle = endAngle;
-        }
+        const selectedWinner = contestants.find(c => c.color.toLowerCase() === color.toLowerCase());
 
         if (selectedWinner) {
           setWinner({ name: selectedWinner.name, color: selectedWinner.color });
@@ -134,11 +129,43 @@ export const LotteryPage = () => {
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
+        } else {
+          // Fallback for edge cases where the color is not found
+          const finalRotation = (startRotation + spinSpeed * (duration / 1000));
+          const pointerAngle = (finalRotation + 270) % 360;
+          let accumulatedAngle = 0;
+          let fallbackWinner: Contestant | null = null;
+          for (const contestant of contestants) {
+            const segmentAngle = (contestant.percent / 100) * 360;
+            const endAngle = accumulatedAngle + segmentAngle;
+            if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
+              fallbackWinner = contestant;
+              break;
+            }
+            accumulatedAngle = endAngle;
+          }
+          if (fallbackWinner) {
+            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
+            setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
+            setIsSpinning(false);
+            setRemainingSpins(prev => prev - 1);
+            setIsModalOpen(true);
+          }
         }
       }
     };
 
     requestAnimationFrame(animate);
+  };
+
+  const removeContestant = (name: string) => {
+    const newContestants = contestants.filter(c => c.name !== name);
+    const totalPercent = newContestants.reduce((acc, c) => acc + c.percent, 0);
+    const updatedContestants = newContestants.map(c => ({
+      ...c,
+      percent: (c.percent / totalPercent) * 100,
+    }));
+    setContestants(updatedContestants);
   };
 
   const resetWheel = () => {
@@ -147,6 +174,13 @@ export const LotteryPage = () => {
     setRotation(0);
     setRemainingSpins(12);
     setWinners([]);
+  };
+
+  const getHexColor = (rgb: number[]) => {
+    return '#' + rgb.map(c => {
+      const hex = c.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
   };
 
   return (
@@ -181,13 +215,23 @@ export const LotteryPage = () => {
 
       <ReactModal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {
+          setIsModalOpen(false);
+          if (winner) {
+            removeContestant(winner.name);
+          }
+        }}
         style={ModalStyles}
         contentLabel="Winner Modal"
       >
         <h2>The Winner Is...</h2>
         <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
-        <ModalCloseButton onClick={() => setIsModalOpen(false)}>Close</ModalCloseButton>
+        <ModalCloseButton onClick={() => {
+          setIsModalOpen(false);
+          if (winner) {
+            removeContestant(winner.name);
+          }
+        }}>Close</ModalCloseButton>
       </ReactModal>
 
       {winners.length > 0 && (
