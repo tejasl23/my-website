@@ -27,14 +27,29 @@ export const LotteryPage = () => {
     { name: 'Dakota', percent: 15.6, color: THEME.palette.wheel.duodenary },
   ];
 
-  const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
+  const [contestants, setContestants] = useState<Contestant[]>(() => {
+    const savedContestants = localStorage.getItem('contestants');
+    return savedContestants ? JSON.parse(savedContestants) : initialContestants;
+  });
   const [winner, setWinner] = useState<{ name: string, color: string } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const [remainingSpins, setRemainingSpins] = useState(12);
+  const [remainingSpins, setRemainingSpins] = useState(() => {
+    const savedRemainingSpins = localStorage.getItem('remainingSpins');
+    return savedRemainingSpins ? JSON.parse(savedRemainingSpins) : 12;
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
+  const [winners, setWinners] = useState<{ name: string, color: string }[]>(() => {
+    const savedWinners = localStorage.getItem('winners');
+    return savedWinners ? JSON.parse(savedWinners) : [];
+  });
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem('contestants', JSON.stringify(contestants));
+    localStorage.setItem('remainingSpins', JSON.stringify(remainingSpins));
+    localStorage.setItem('winners', JSON.stringify(winners));
+  }, [contestants, remainingSpins, winners]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -185,7 +200,7 @@ export const LotteryPage = () => {
 
   return (
     <PageContainer>
-      <Header>Welcome to the 2025 Fantasy Draft</Header>
+      <Header>{remainingSpins > 0 ? 'Welcome to the 2025 Fantasy Draft' : 'Froots 2025 Fantasy'}</Header>
       <DraftContainer>
         <div style={{ flex: 1, maxWidth: '700px' }}>
           <WheelContainer>
