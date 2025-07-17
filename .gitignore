@@ -11,6 +11,7 @@ firebase.json
 .firebaserc
 package-lock.json
 package.json
+dist/
 
 # Firebase cache
 .firebase/
