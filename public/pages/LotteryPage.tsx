@@ -41,6 +41,7 @@ export const LotteryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
