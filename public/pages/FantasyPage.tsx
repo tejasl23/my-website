@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { THEME } from '../theme';
 
 /**
  * Renders the Fantasy Football countdown page.
@@ -63,11 +64,11 @@ export const FantasyPage = () => {
             alignItems: 'center',
             height: '100vh',
             margin: 0,
-            backgroundColor: '#f0f0f0'
+            backgroundColor: THEME.palette.tertiary.main
         }}>
             <div style={{
                 textAlign: 'center',
-                backgroundColor: 'white',
+                backgroundColor: THEME.palette.common.white,
                 padding: '2rem',
                 borderRadius: '10px',
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
@@ -75,7 +76,7 @@ export const FantasyPage = () => {
                 <div style={{
                     fontSize: '2rem',
                     marginBottom: '1rem',
-                    color: '#333'
+                    color: THEME.palette.common.black
                 }}>Fantasy Football Lottery</div>
                 <div style={{
                     display: 'flex',
@@ -83,8 +84,8 @@ export const FantasyPage = () => {
                     gap: '1rem'
                 }}>
                     <div style={{
-                        backgroundColor: '#333',
-                        color: 'white',
+                        backgroundColor: THEME.palette.common.black,
+                        color: THEME.palette.common.white,
                         padding: '1rem',
                         borderRadius: '5px',
                         minWidth: '80px'
@@ -100,8 +101,8 @@ export const FantasyPage = () => {
                         }}>Days</div>
                     </div>
                     <div style={{
-                        backgroundColor: '#333',
-                        color: 'white',
+                        backgroundColor: THEME.palette.common.black,
+                        color: THEME.palette.common.white,
                         padding: '1rem',
                         borderRadius: '5px',
                         minWidth: '80px'
@@ -117,8 +118,8 @@ export const FantasyPage = () => {
                         }}>Hours</div>
                     </div>
                     <div style={{
-                        backgroundColor: '#333',
-                        color: 'white',
+                        backgroundColor: THEME.palette.common.black,
+                        color: THEME.palette.common.white,
                         padding: '1rem',
                         borderRadius: '5px',
                         minWidth: '80px'
@@ -134,8 +135,8 @@ export const FantasyPage = () => {
                         }}>Minutes</div>
                     </div>
                     <div style={{
-                        backgroundColor: '#333',
-                        color: 'white',
+                        backgroundColor: THEME.palette.common.black,
+                        color: THEME.palette.common.white,
                         padding: '1rem',
                         borderRadius: '5px',
                         minWidth: '80px'

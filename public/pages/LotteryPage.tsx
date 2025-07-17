@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { THEME } from '../theme';
 
 interface Contestant {
   name: string;
@@ -152,7 +153,7 @@ export const LotteryPage = () => {
 
 // Styled components
 const PageContainer = styled.div`
-  background-color: #f0f4f8;
+  background-color: ${THEME.palette.primary.main};
   font-family: 'Arial', sans-serif;
   text-align: center;
   padding: 2rem;
@@ -160,7 +161,7 @@ const PageContainer = styled.div`
 `;
 
 const Header = styled.h1`
-  color: #2c3e50;
+  color: ${THEME.palette.quaternary.main};
   font-size: 2.5rem;
   margin-bottom: 2rem;
 `;
@@ -198,9 +199,9 @@ const WheelSegment = styled.div<{ $index: number; $segmentCount: number; $colorI
   transform: rotate(${props => (360 / props.$segmentCount) * props.$index}deg) skewY(${props => 90 - (360 / props.$segmentCount)}deg);
   background: ${props => {
     const colors = [
-      '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
-      '#9966FF', '#FF9F40', '#8AC24A', '#EA5F89',
-      '#00BFFF', '#FFD700', '#32CD32', '#9370DB'
+      THEME.palette.wheel.main, THEME.palette.wheel.secondary, THEME.palette.wheel.tertiary, THEME.palette.wheel.quaternary,
+      THEME.palette.wheel.quinary, THEME.palette.wheel.senary, THEME.palette.wheel.septenary, THEME.palette.wheel.octonary,
+      THEME.palette.wheel.nonary, THEME.palette.wheel.denary, THEME.palette.wheel.undenary, THEME.palette.wheel.duodenary
     ];
     return colors[props.$colorIndex];
   }};
@@ -214,14 +215,14 @@ const WheelSegment = styled.div<{ $index: number; $segmentCount: number; $colorI
 const SegmentText = styled.div`
   transform: skewY(${props => (90 - (360 / 12))}deg) rotate(${props => (360 / 12) / 2}deg);
   font-weight: bold;
-  color: white;
+  color: ${THEME.palette.common.white};
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   font-size: 1.2rem;
 `;
 
 const SegmentOdds = styled.div`
   transform: skewY(${props => (90 - (360 / 12))}deg) rotate(${props => (360 / 12) / 2}deg);
-  color: white;
+  color: ${THEME.palette.common.white};
   font-size: 0.8rem;
   margin-top: 5px;
 `;
@@ -230,7 +231,7 @@ const WheelCenter = styled.div`
   position: absolute;
   width: 50px;
   height: 50px;
-  background: #2c3e50;
+  background: ${THEME.palette.quaternary.main};
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -247,7 +248,7 @@ const SpinPointer = styled.div`
   height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-top: 30px solid #e74c3c;
+  border-top: 30px solid ${THEME.palette.button.primary};
   z-index: 10;
 `;
 
@@ -261,7 +262,7 @@ const Controls = styled.div`
 const SpinButton = styled.button`
   padding: 12px 24px;
   font-size: 1.2rem;
-  background-color: #2ecc71;
+  background-color: ${THEME.palette.button.secondary};
   color: white;
   border: none;
   border-radius: 5px;
@@ -269,18 +270,18 @@ const SpinButton = styled.button`
   transition: background-color 0.3s;
 
   &:hover:not(:disabled) {
-    background-color: #27ae60;
+    background-color: ${THEME.palette.button.quinary};
   }
 
   &:disabled {
-    background-color: #95a5a6;
+    background-color: ${THEME.palette.button.tertiary};
     cursor: not-allowed;
   }
 `;
 
 const ResetButton = styled.button`
   padding: 8px 16px;
-  background-color: #e74c3c;
+  background-color: ${THEME.palette.button.primary};
   color: white;
   border: none;
   border-radius: 5px;
@@ -288,26 +289,26 @@ const ResetButton = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #c0392b;
+    background-color: ${THEME.palette.button.quaternary};
   }
 `;
 
 const RemainingSpins = styled.div`
   font-size: 1.1rem;
-  color: #7f8c8d;
+  color: ${THEME.palette.text.primary};
 `;
 
 const WinnerDisplay = styled.div`
   margin-top: 2rem;
   padding: 1rem;
-  background-color: #f8f9fa;
+  background-color: ${THEME.palette.text.secondary};
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 const WinnerName = styled.div`
   font-size: 2rem;
-  color: #e74c3c;
+  color: ${THEME.palette.button.primary};
   font-weight: bold;
   margin-top: 0.5rem;
 `;
@@ -315,7 +316,7 @@ const WinnerName = styled.div`
 const ContestantList = styled.div`
   max-width: 600px;
   margin: 0 auto;
-  background-color: white;
+  background-color: ${THEME.palette.common.white};
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -324,7 +325,7 @@ const ContestantList = styled.div`
 const ContestantItem = styled.li`
   text-align: left;
   padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid ${THEME.palette.border.primary};
   list-style-type: none;
   display: flex;
   justify-content: space-between;
