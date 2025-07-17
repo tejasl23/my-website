@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import ReactModal from 'react-modal';
 import { THEME } from '../theme';
 
+ReactModal.setAppElement('#root');
+
 interface Contestant {
   name: string;
   initialWeight: number;
@@ -126,7 +128,7 @@ export const LotteryPage = () => {
       accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
     }
     const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
-    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2)) - 90;
+    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2));
 
     console.log('Selected Winner:', contestants[selectedIndex].name);
     console.log('Selected Index:', selectedIndex);
