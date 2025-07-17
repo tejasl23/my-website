@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { THEME } from '../theme';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH_LOTTERY_PAGE } from './routes.constants';
 
 /**
  * Renders the Fantasy Football countdown page.
@@ -7,6 +10,7 @@ import { THEME } from '../theme';
  * @component
  */
 export const FantasyPage = () => {
+    const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState({
         days: '00',
         hours: '00',
@@ -152,6 +156,13 @@ export const FantasyPage = () => {
                         }}>Seconds</div>
                     </div>
                 </div>
+                <Button
+                    variant="contained"
+                    onClick={() => navigate(`/${ROUTE_PATH_LOTTERY_PAGE}`)}
+                    sx={{ marginTop: '20px' }}
+                >
+                    Go to Lottery
+                </Button>
             </div>
         </div>
     );
