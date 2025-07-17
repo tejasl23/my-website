@@ -129,7 +129,7 @@ export const LotteryPage = () => {
         const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
 
         let accumulatedAngle = 0;
-        let selectedWinner = null;
+        let selectedWinner: Contestant | null = null;
 
         for (let i = 0; i < contestants.length; i++) {
           const contestant = contestants[i];
