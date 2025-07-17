@@ -125,7 +125,8 @@ export const LotteryPage = () => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        const finalRotation = (startRotation + spinSpeed * (duration / 1000)) % 360;
+        const finalRotation = (startRotation + spinSpeed * (duration / 1000));
+        const pointerAngle = (finalRotation + 270) % 360;
         const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
 
         let accumulatedAngle = 0;
@@ -136,7 +137,7 @@ export const LotteryPage = () => {
           const segmentAngle = (contestant.currentWeight / totalWeight) * 360;
           const endAngle = accumulatedAngle + segmentAngle;
 
-          if (finalRotation >= accumulatedAngle && finalRotation < endAngle) {
+          if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
             selectedWinner = contestant;
             break;
           }
