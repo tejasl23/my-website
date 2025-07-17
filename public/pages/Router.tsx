@@ -1,5 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { ROUTE_PATH_SECRET_PAGE, ROUTE_PATH_FANTASY_PAGE, ROUTE_PATH_RESUME_PAGE, ROUTE_PATH_LOTTERY_PAGE } from './routes.constants';
+import { ROUTE_PATH_SECRET_PAGE, ROUTE_PATH_FANTASY_PAGE, ROUTE_PATH_RESUME_PAGE } from './routes.constants';
 import { HomePage } from './HomePage';
 import { SecretPage } from './SecretPage';
 import { FantasyPage } from './FantasyPage';
@@ -21,9 +21,10 @@ export const Router = () => {
                     {/* If the path is empty, use the home page */}
                     <Route index element={<HomePage />} />
 
-                    <Route path={ROUTE_PATH_FANTASY_PAGE} element={<FantasyPage />} />
+                    <Route path={ROUTE_PATH_FANTASY_PAGE} element={<FantasyPage />}>
+                        <Route path="lottery" element={<LotteryPage />} />
+                    </Route>
                     <Route path={ROUTE_PATH_RESUME_PAGE} element={<ResumePage />} />
-                    <Route path={ROUTE_PATH_LOTTERY_PAGE} element={<LotteryPage />} />
                 </Route>
 
                 <Route path={ROUTE_PATH_SECRET_PAGE} element={<SecretPage />} />

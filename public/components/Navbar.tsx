@@ -4,7 +4,7 @@ import { ROUTE_PATH_FANTASY_PAGE, ROUTE_PATH_RESUME_PAGE } from '../pages/routes
 
 export const Navbar = () => {
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ backgroundColor: '#212121' }}>
             <Toolbar>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
