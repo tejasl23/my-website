@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
 import { THEME } from '../theme';
@@ -7,31 +7,24 @@ ReactModal.setAppElement('#root');
 
 interface Contestant {
   name: string;
-  initialWeight: number;
-  currentWeight: number;
+  percent: number;
   color: string;
 }
 
-/**
- * Renders a fantasy draft wheel with customizable odds
- * 
- * @component
- */
 export const LotteryPage = () => {
-  // Define contestants with their initial weights (higher = better odds)
   const initialContestants: Contestant[] = [
-    { name: 'Alex', initialWeight: 10, currentWeight: 10, color: THEME.palette.wheel.main },
-    { name: 'Jamie', initialWeight: 8, currentWeight: 8, color: THEME.palette.wheel.secondary },
-    { name: 'Taylor', initialWeight: 7, currentWeight: 7, color: THEME.palette.wheel.tertiary },
-    { name: 'Morgan', initialWeight: 6, currentWeight: 6, color: THEME.palette.wheel.quaternary },
-    { name: 'Casey', initialWeight: 5, currentWeight: 5, color: THEME.palette.wheel.quinary },
-    { name: 'Riley', initialWeight: 4, currentWeight: 4, color: THEME.palette.wheel.senary },
-    { name: 'Jordan', initialWeight: 3, currentWeight: 3, color: THEME.palette.wheel.septenary },
-    { name: 'Peyton', initialWeight: 3, currentWeight: 3, color: THEME.palette.wheel.octonary },
-    { name: 'Quinn', initialWeight: 2, currentWeight: 2, color: THEME.palette.wheel.nonary },
-    { name: 'Avery', initialWeight: 2, currentWeight: 2, color: THEME.palette.wheel.denary },
-    { name: 'Skyler', initialWeight: 1, currentWeight: 1, color: THEME.palette.wheel.undenary },
-    { name: 'Dakota', initialWeight: 1, currentWeight: 1, color: THEME.palette.wheel.duodenary },
+    { name: 'Alex', percent: 17.2, color: THEME.palette.wheel.main },
+    { name: 'Jamie', percent: 13.8, color: THEME.palette.wheel.secondary },
+    { name: 'Taylor', percent: 12.1, color: THEME.palette.wheel.tertiary },
+    { name: 'Morgan', percent: 10.3, color: THEME.palette.wheel.quaternary },
+    { name: 'Casey', percent: 8.6, color: THEME.palette.wheel.quinary },
+    { name: 'Riley', percent: 6.9, color: THEME.palette.wheel.senary },
+    { name: 'Jordan', percent: 5.2, color: THEME.palette.wheel.septenary },
+    { name: 'Peyton', percent: 5.2, color: THEME.palette.wheel.octonary },
+    { name: 'Quinn', percent: 3.4, color: THEME.palette.wheel.nonary },
+    { name: 'Avery', percent: 3.4, color: THEME.palette.wheel.denary },
+    { name: 'Skyler', percent: 1.7, color: THEME.palette.wheel.undenary },
+    { name: 'Dakota', percent: 15.6, color: THEME.palette.wheel.duodenary },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
@@ -39,11 +32,9 @@ export const LotteryPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(12);
-  const [overflowNames, setOverflowNames] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -51,7 +42,6 @@ export const LotteryPage = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
     let startAngle = 0;
     const radius = canvas.width / 2;
 
@@ -61,8 +51,8 @@ export const LotteryPage = () => {
     ctx.rotate(rotation * Math.PI / 180);
     ctx.translate(-radius, -radius);
 
-    contestants.forEach((contestant, i) => {
-      const sliceAngle = (contestant.currentWeight / totalWeight) * 2 * Math.PI;
+    contestants.forEach((contestant) => {
+      const sliceAngle = (contestant.percent / 100) * 2 * Math.PI;
 
       ctx.fillStyle = contestant.color;
       ctx.beginPath();
@@ -71,7 +61,6 @@ export const LotteryPage = () => {
       ctx.closePath();
       ctx.fill();
 
-      // Draw text
       ctx.save();
       ctx.translate(radius, radius);
       ctx.rotate(startAngle + sliceAngle / 2);
@@ -85,7 +74,6 @@ export const LotteryPage = () => {
         ctx.font = '16px Arial';
         ctx.fillText(text, radius - 10, 0);
       } else {
-        // Draw arrow
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.moveTo(radius - 10, 0);
@@ -96,12 +84,10 @@ export const LotteryPage = () => {
       }
 
       ctx.restore();
-
       startAngle += sliceAngle;
     });
 
     ctx.restore();
-
   }, [contestants, rotation]);
 
   const spinWheel = () => {
@@ -110,15 +96,15 @@ export const LotteryPage = () => {
     setIsSpinning(true);
     setWinner(null);
 
-    const duration = 12000;
+    const duration = 10000 + Math.random() * 5000; // 10–15 sec
     const startTime = performance.now();
     const startRotation = rotation;
-    const spinSpeed = 360 * 2; // 2 rotations per second
+    const spinSpeed = 360 * 2;
 
     const animate = (currentTime: number) => {
       const elapsedTime = currentTime - startTime;
       const progress = Math.min(elapsedTime / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
 
       setRotation(startRotation + easedProgress * spinSpeed * (duration / 1000));
 
@@ -127,14 +113,12 @@ export const LotteryPage = () => {
       } else {
         const finalRotation = (startRotation + spinSpeed * (duration / 1000));
         const pointerAngle = (finalRotation + 270) % 360;
-        const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
 
         let accumulatedAngle = 0;
         let selectedWinner: Contestant | null = null;
 
-        for (let i = 0; i < contestants.length; i++) {
-          const contestant = contestants[i];
-          const segmentAngle = (contestant.currentWeight / totalWeight) * 360;
+        for (const contestant of contestants) {
+          const segmentAngle = (contestant.percent / 100) * 360;
           const endAngle = accumulatedAngle + segmentAngle;
 
           if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
@@ -145,24 +129,11 @@ export const LotteryPage = () => {
         }
 
         if (selectedWinner) {
-          const winnerName = selectedWinner.name;
-          const winnerColor = selectedWinner.color;
-
-          setWinner({ name: winnerName, color: winnerColor });
-          setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
+          setWinner({ name: selectedWinner.name, color: selectedWinner.color });
+          setWinners(prev => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
-
-          setContestants(prev => {
-            const newContestants = prev.filter(c => c.name !== winnerName);
-            const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
-
-            return newContestants.map(c => ({
-              ...c,
-              currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * (selectedWinner as Contestant).initialWeight
-            }));
-          });
         }
       }
     };
@@ -181,14 +152,12 @@ export const LotteryPage = () => {
   return (
     <PageContainer>
       <Header>Welcome to the 2025 Fantasy Draft</Header>
-      
       <DraftContainer>
-        <div style={{ flex: 1, maxWidth: '400px' }}>
+        <div style={{ flex: 1, maxWidth: '700px' }}>
           <WheelContainer>
             <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
             <SpinPointer />
           </WheelContainer>
-
           <Controls>
             <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
               {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
@@ -203,12 +172,13 @@ export const LotteryPage = () => {
           <ul>
             {contestants.map(contestant => (
               <ContestantItem key={contestant.name}>
-                {contestant.name} - {Math.round((contestant.currentWeight / totalWeight) * 100)}% chance
+                {contestant.name} – {contestant.percent.toFixed(1)}% chance
               </ContestantItem>
             ))}
           </ul>
         </ContestantList>
       </DraftContainer>
+
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
@@ -242,7 +212,6 @@ export const LotteryPage = () => {
   );
 };
 
-// Styled components
 const PageContainer = styled.div`
   background-color: ${THEME.palette.primary.main};
   font-family: 'Arial', sans-serif;
@@ -275,22 +244,9 @@ const WheelContainer = styled.div`
   position: relative;
   width: 100%;
   max-width: 400px;
-  height: auto;
-  aspect-ratio: 1 / 1;
   margin: 0 auto;
+  aspect-ratio: 1 / 1;
 `;
-
-const Wheel = styled.div<{ $isSpinning: boolean; $segmentCount: number }>`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-  transition: ${props => props.$isSpinning ? 'transform 12s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none'};
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-`;
-
-
 
 const SpinPointer = styled.div`
   position: absolute;
@@ -349,14 +305,6 @@ const ResetButton = styled.button`
 const RemainingSpins = styled.div`
   font-size: 1.1rem;
   color: ${THEME.palette.text.primary};
-`;
-
-const WinnerDisplay = styled.div`
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: ${THEME.palette.text.secondary};
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 const WinnerName = styled.div<{ $color?: string }>`
