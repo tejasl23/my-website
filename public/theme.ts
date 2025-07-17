@@ -1,5 +1,64 @@
 import { createTheme } from '@mui/material';
 
+declare module '@mui/material/styles' {
+    interface Palette {
+        tertiary: Palette['primary'];
+        quaternary: Palette['primary'];
+        wheel: {
+            main: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+            quinary: string;
+            senary: string;
+            septenary: string;
+            octonary: string;
+            nonary: string;
+            denary: string;
+            undenary: string;
+            duodenary: string;
+        };
+        button: {
+            primary: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+            quinary: string;
+        };
+        border: {
+            primary: string;
+        };
+    }
+    interface PaletteOptions {
+        tertiary?: PaletteOptions['primary'];
+        quaternary?: PaletteOptions['primary'];
+        wheel?: {
+            main: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+            quinary: string;
+            senary: string;
+            septenary: string;
+            octonary: string;
+            nonary: string;
+            denary: string;
+            undenary: string;
+            duodenary: string;
+        };
+        button?: {
+            primary: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+            quinary: string;
+        };
+        border?: {
+            primary: string;
+        };
+    }
+}
+
 /**
  * The main theme of the app.
  *
