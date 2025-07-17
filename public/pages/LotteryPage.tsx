@@ -126,7 +126,7 @@ export const LotteryPage = () => {
       accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
     }
     const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
-    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2)));
+    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2));
 
     const duration = 12000;
     const startTime = performance.now();
@@ -187,7 +187,7 @@ export const LotteryPage = () => {
           <Controls>
             <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
               {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-            </Button>
+            </SpinButton>
             <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
             <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
           </Controls>
