@@ -1,7 +1,8 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router';
-import { ROUTE_PATH_SECRET_PAGE } from './routes.constants';
+import { ROUTE_PATH_SECRET_PAGE, ROUTE_PATH_FANTASY_PAGE } from './routes.constants';
 import { HomePage } from './HomePage';
 import { SecretPage } from './SecretPage';
+import { FantasyPage } from './FantasyPage';
 /**
  * Renders pages based on url.
  *
@@ -16,6 +17,7 @@ export const Router = () => {
                 <Route index element={<HomePage />} />
 
                 <Route path={ROUTE_PATH_SECRET_PAGE} element={<SecretPage />} />
+                <Route path={ROUTE_PATH_FANTASY_PAGE} element={<FantasyPage />} />
 
                 {/* Any other urls should be sent to the home page */}
                 <Route path="*" element={<Navigate to="/" />} />
