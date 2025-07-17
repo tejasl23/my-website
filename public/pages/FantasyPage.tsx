@@ -81,28 +81,28 @@ export const FantasyPage = () => {
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
                     }}>
                         <div style={{
-                            fontSize: '2rem',
-                            marginBottom: '1rem',
+                            fontSize: '4rem',
+                            marginBottom: '2rem',
                             color: THEME.palette.common.black
                         }}>Fantasy Football Lottery</div>
                         <div style={{
                             display: 'flex',
                             justifyContent: 'center',
-                            gap: '1rem'
+                            gap: '2rem'
                         }}>
                             <div style={{
                                 backgroundColor: THEME.palette.common.black,
                                 color: THEME.palette.common.white,
-                                padding: '1rem',
-                                borderRadius: '5px',
-                                minWidth: '80px'
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
                             }}>
                                 <div style={{
-                                    fontSize: '2.5rem',
+                                    fontSize: '5rem',
                                     fontWeight: 'bold'
                                 }}>{timeLeft.days}</div>
                                 <div style={{
-                                    fontSize: '0.9rem',
+                                    fontSize: '1.5rem',
                                     textTransform: 'uppercase',
                                     opacity: 0.8
                                 }}>Days</div>
@@ -110,16 +110,16 @@ export const FantasyPage = () => {
                             <div style={{
                                 backgroundColor: THEME.palette.common.black,
                                 color: THEME.palette.common.white,
-                                padding: '1rem',
-                                borderRadius: '5px',
-                                minWidth: '80px'
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
                             }}>
                                 <div style={{
-                                    fontSize: '2.5rem',
+                                    fontSize: '5rem',
                                     fontWeight: 'bold'
                                 }}>{timeLeft.hours}</div>
                                 <div style={{
-                                    fontSize: '0.9rem',
+                                    fontSize: '1.5rem',
                                     textTransform: 'uppercase',
                                     opacity: 0.8
                                 }}>Hours</div>
@@ -127,16 +127,16 @@ export const FantasyPage = () => {
                             <div style={{
                                 backgroundColor: THEME.palette.common.black,
                                 color: THEME.palette.common.white,
-                                padding: '1rem',
-                                borderRadius: '5px',
-                                minWidth: '80px'
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
                             }}>
                                 <div style={{
-                                    fontSize: '2.5rem',
+                                    fontSize: '5rem',
                                     fontWeight: 'bold'
                                 }}>{timeLeft.minutes}</div>
                                 <div style={{
-                                    fontSize: '0.9rem',
+                                    fontSize: '1.5rem',
                                     textTransform: 'uppercase',
                                     opacity: 0.8
                                 }}>Minutes</div>
@@ -144,16 +144,16 @@ export const FantasyPage = () => {
                             <div style={{
                                 backgroundColor: THEME.palette.common.black,
                                 color: THEME.palette.common.white,
-                                padding: '1rem',
-                                borderRadius: '5px',
-                                minWidth: '80px'
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
                             }}>
                                 <div style={{
-                                    fontSize: '2.5rem',
+                                    fontSize: '5rem',
                                     fontWeight: 'bold'
                                 }}>{timeLeft.seconds}</div>
                                 <div style={{
-                                    fontSize: '0.9rem',
+                                    fontSize: '1.5rem',
                                     textTransform: 'uppercase',
                                     opacity: 0.8
                                 }}>Seconds</div>

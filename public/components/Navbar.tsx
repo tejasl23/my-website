@@ -11,9 +11,6 @@ export const Navbar = () => {
                         Tejas' Website
                     </Link>
                 </Typography>
-                <Button color="inherit" component={Link} to="/">
-                    Home
-                </Button>
                 <Button color="inherit" component={Link} to={`/${ROUTE_PATH_FANTASY_PAGE}`}>
                     Fantasy
                 </Button>
