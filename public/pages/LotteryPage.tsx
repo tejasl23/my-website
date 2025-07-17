@@ -187,7 +187,7 @@ export const LotteryPage = () => {
           <Controls>
             <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
               {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-            </Button>
+            </SpinButton>
             <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
             <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
           </Controls>
