@@ -7,6 +7,7 @@ interface Contestant {
   name: string;
   initialWeight: number;
   currentWeight: number;
+  color: string;
 }
 
 /**
@@ -17,18 +18,18 @@ interface Contestant {
 export const LotteryPage = () => {
   // Define contestants with their initial weights (higher = better odds)
   const initialContestants: Contestant[] = [
-    { name: 'Alex', initialWeight: 10, currentWeight: 10 },
-    { name: 'Jamie', initialWeight: 8, currentWeight: 8 },
-    { name: 'Taylor', initialWeight: 7, currentWeight: 7 },
-    { name: 'Morgan', initialWeight: 6, currentWeight: 6 },
-    { name: 'Casey', initialWeight: 5, currentWeight: 5 },
-    { name: 'Riley', initialWeight: 4, currentWeight: 4 },
-    { name: 'Jordan', initialWeight: 3, currentWeight: 3 },
-    { name: 'Peyton', initialWeight: 3, currentWeight: 3 },
-    { name: 'Quinn', initialWeight: 2, currentWeight: 2 },
-    { name: 'Avery', initialWeight: 2, currentWeight: 2 },
-    { name: 'Skyler', initialWeight: 1, currentWeight: 1 },
-    { name: 'Dakota', initialWeight: 1, currentWeight: 1 },
+    { name: 'Alex', initialWeight: 10, currentWeight: 10, color: THEME.palette.wheel.main },
+    { name: 'Jamie', initialWeight: 8, currentWeight: 8, color: THEME.palette.wheel.secondary },
+    { name: 'Taylor', initialWeight: 7, currentWeight: 7, color: THEME.palette.wheel.tertiary },
+    { name: 'Morgan', initialWeight: 6, currentWeight: 6, color: THEME.palette.wheel.quaternary },
+    { name: 'Casey', initialWeight: 5, currentWeight: 5, color: THEME.palette.wheel.quinary },
+    { name: 'Riley', initialWeight: 4, currentWeight: 4, color: THEME.palette.wheel.senary },
+    { name: 'Jordan', initialWeight: 3, currentWeight: 3, color: THEME.palette.wheel.septenary },
+    { name: 'Peyton', initialWeight: 3, currentWeight: 3, color: THEME.palette.wheel.octonary },
+    { name: 'Quinn', initialWeight: 2, currentWeight: 2, color: THEME.palette.wheel.nonary },
+    { name: 'Avery', initialWeight: 2, currentWeight: 2, color: THEME.palette.wheel.denary },
+    { name: 'Skyler', initialWeight: 1, currentWeight: 1, color: THEME.palette.wheel.undenary },
+    { name: 'Dakota', initialWeight: 1, currentWeight: 1, color: THEME.palette.wheel.duodenary },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
@@ -39,9 +40,66 @@ export const LotteryPage = () => {
   const [overflowNames, setOverflowNames] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-  // Calculate total weight for probability distribution
-  const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
+    let startAngle = 0;
+    const radius = canvas.width / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(rotation * Math.PI / 180);
+    ctx.translate(-radius, -radius);
+
+    contestants.forEach((contestant, i) => {
+      const sliceAngle = (contestant.currentWeight / totalWeight) * 2 * Math.PI;
+
+      ctx.fillStyle = contestant.color;
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, startAngle, startAngle + sliceAngle);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw text
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(startAngle + sliceAngle / 2);
+
+      const text = contestant.name;
+      const textFits = ctx.measureText(text).width < radius - 20;
+
+      if (textFits) {
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#fff';
+        ctx.font = '16px Arial';
+        ctx.fillText(text, radius - 10, 0);
+      } else {
+        // Draw arrow
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(radius - 10, 0);
+        ctx.lineTo(radius - 30, -10);
+        ctx.lineTo(radius - 30, 10);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.restore();
+
+      startAngle += sliceAngle;
+    });
+
+    ctx.restore();
+
+  }, [contestants, rotation]);
 
   const spinWheel = () => {
     if (isSpinning || remainingSpins <= 0) return;
@@ -49,10 +107,7 @@ export const LotteryPage = () => {
     setIsSpinning(true);
     setWinner(null);
 
-    // Random rotation (5-10 full rotations plus the winning segment)
-    const baseRotation = 360 * (5 + Math.random() * 5);
-    
-    // Select winner based on weights
+    const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
     let random = Math.random() * totalWeight;
     let accumulatedWeight = 0;
     let selectedIndex = 0;
@@ -65,44 +120,48 @@ export const LotteryPage = () => {
       }
     }
 
-    // Calculate final rotation to land on the selected segment
     let accumulatedAngle = 0;
     for (let i = 0; i < selectedIndex; i++) {
       accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
     }
     const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
-    const finalRotation = baseRotation + accumulatedAngle + segmentAngle / 2;
+    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2)));
 
-    setRotation(finalRotation);
-    
-    setTimeout(() => {
-      const selectedWinner = contestants[selectedIndex];
-      const winnerName = selectedWinner.name;
-      const colors = [
-        THEME.palette.wheel.main, THEME.palette.wheel.secondary, THEME.palette.wheel.tertiary, THEME.palette.wheel.quaternary,
-        THEME.palette.wheel.quinary, THEME.palette.wheel.senary, THEME.palette.wheel.septenary, THEME.palette.wheel.octonary,
-        THEME.palette.wheel.nonary, THEME.palette.wheel.denary, THEME.palette.wheel.undenary, THEME.palette.wheel.duodenary
-      ];
-      const winnerColor = colors[selectedIndex % 12];
+    const duration = 12000;
+    const startTime = performance.now();
 
-      setWinner(winnerName);
-      setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
-      setIsSpinning(false);
-      setRemainingSpins(prev => prev - 1);
-      setIsModalOpen(true);
-      
-      // Remove winner and redistribute weights
-      setContestants(prev => {
-        const newContestants = prev.filter(c => c.name !== winnerName);
-        const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
+    const animate = (currentTime: number) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      setRotation(easedProgress * targetRotation);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        const selectedWinner = contestants[selectedIndex];
+        const winnerName = selectedWinner.name;
+        const winnerColor = selectedWinner.color;
+
+        setWinner(winnerName);
+        setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
+        setIsSpinning(false);
+        setRemainingSpins(prev => prev - 1);
+        setIsModalOpen(true);
         
-        // Redistribute weights proportionally
-        return newContestants.map(c => ({
-          ...c,
-          currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * selectedWinner.initialWeight
-        }));
-      });
-    }, 12000); // Match this with CSS transition duration
+        setContestants(prev => {
+          const newContestants = prev.filter(c => c.name !== winnerName);
+          const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
+
+          return newContestants.map(c => ({
+            ...c,
+            currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * selectedWinner.initialWeight
+          }));
+        });
+      }
+    };
+
+    requestAnimationFrame(animate);
   };
 
   const resetWheel = () => {
@@ -120,74 +179,17 @@ export const LotteryPage = () => {
       <DraftContainer>
         <div>
           <WheelContainer>
-            <Wheel
-              style={{ transform: `rotate(${rotation}deg)` }}
-              $isSpinning={isSpinning}
-              $segmentCount={contestants.length}
-            >
-            {(() => {
-              let accumulatedAngle = 0;
-              const newOverflowNames: string[] = [];
-              const segments = contestants.map((contestant, index) => {
-                const percentage = contestant.currentWeight / totalWeight;
-                const arc = percentage * 360;
-                const startAngle = accumulatedAngle;
-                accumulatedAngle += arc;
-
-                const textFits = arc > 15; // Heuristic value, might need adjustment
-                if (!textFits) {
-                  newOverflowNames.push(contestant.name);
-                }
-
-                return (
-                  <WheelSegment
-                    key={contestant.name}
-                    $startAngle={startAngle}
-                    $arc={arc}
-                    $colorIndex={index % 12}
-                  >
-                    {textFits ? (
-                      <>
-                        <SegmentText $arc={arc}>{contestant.name}</SegmentText>
-                        <SegmentOdds $arc={arc}>{Math.round(percentage * 100)}%</SegmentOdds>
-                      </>
-                    ) : (
-                      <Arrow>&#x2794;</Arrow>
-                    )}
-                  </WheelSegment>
-                );
-              });
-
-              // This is a hack to avoid setState in render
-              if (JSON.stringify(overflowNames) !== JSON.stringify(newOverflowNames)) {
-                setTimeout(() => setOverflowNames(newOverflowNames), 0);
-              }
-
-              return segments;
-            })()}
-            </Wheel>
-            <WheelCenter />
+            <canvas ref={canvasRef} width="400" height="400" />
             <SpinPointer />
           </WheelContainer>
 
           <Controls>
             <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
               {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-            </SpinButton>
+            </Button>
             <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
             <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
           </Controls>
-
-          {overflowNames.length > 0 && (
-            <OverflowList>
-              {overflowNames.map(name => (
-                <OverflowItem key={name}>
-                  <Arrow>&#x2794;</Arrow> {name}
-                </OverflowItem>
-              ))}
-            </OverflowList>
-          )}
-
         </div>
 
         <ContestantList>
@@ -274,72 +276,7 @@ const Wheel = styled.div<{ $isSpinning: boolean; $segmentCount: number }>`
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 `;
 
-const WheelSegment = styled.div<{ $startAngle: number; $arc: number; $colorIndex: number }>`
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  transform-origin: bottom right;
-  transform: rotate(${props => props.$startAngle}deg) skewY(${props => 90 - props.$arc}deg);
-  background: ${props => {
-    const colors = [
-      THEME.palette.wheel.main, THEME.palette.wheel.secondary, THEME.palette.wheel.tertiary, THEME.palette.wheel.quaternary,
-      THEME.palette.wheel.quinary, THEME.palette.wheel.senary, THEME.palette.wheel.septenary, THEME.palette.wheel.octonary,
-      THEME.palette.wheel.nonary, THEME.palette.wheel.denary, THEME.palette.wheel.undenary, THEME.palette.wheel.duodenary
-    ];
-    return colors[props.$colorIndex];
-  }};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-`;
 
-const SegmentText = styled.div<{ $arc: number }>`
-  transform: skewY(${props => -(90 - props.$arc)}deg) rotate(${props => props.$arc / 2}deg);
-  font-weight: bold;
-  color: ${THEME.palette.common.white};
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-  font-size: 1.2rem;
-`;
-
-const SegmentOdds = styled.div<{ $arc: number }>`
-  transform: skewY(${props => -(90 - props.$arc)}deg) rotate(${props => props.$arc / 2}deg);
-  color: ${THEME.palette.common.white};
-  font-size: 0.8rem;
-  margin-top: 5px;
-`;
-
-const Arrow = styled.div`
-  font-size: 2rem;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-`;
-
-const OverflowList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  margin-top: 1rem;
-`;
-
-const OverflowItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: ${THEME.palette.text.primary};
-`;
-
-const WheelCenter = styled.div`
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background: ${THEME.palette.quaternary.main};
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-`;
 
 const SpinPointer = styled.div`
   position: absolute;
