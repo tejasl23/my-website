@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { THEME } from '../theme';
+import { Button } from '@mui/material';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { ROUTE_PATH_FANTASY_PAGE } from './routes.constants';
 
 /**
  * Renders the Fantasy Football countdown page.
@@ -7,6 +10,8 @@ import { THEME } from '../theme';
  * @component
  */
 export const FantasyPage = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [timeLeft, setTimeLeft] = useState({
         days: '00',
         hours: '00',
@@ -57,102 +62,114 @@ export const FantasyPage = () => {
     }, []);
 
     return (
-        <div style={{
-            fontFamily: 'Arial, sans-serif',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
-            margin: 0,
-            backgroundColor: THEME.palette.tertiary.main
-        }}>
-            <div style={{
-                textAlign: 'center',
-                backgroundColor: THEME.palette.common.white,
-                padding: '2rem',
-                borderRadius: '10px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-            }}>
+        <>
+            {location.pathname === `/${ROUTE_PATH_FANTASY_PAGE}` && (
                 <div style={{
-                    fontSize: '2rem',
-                    marginBottom: '1rem',
-                    color: THEME.palette.common.black
-                }}>Fantasy Football Lottery</div>
-                <div style={{
+                    fontFamily: 'Arial, sans-serif',
                     display: 'flex',
                     justifyContent: 'center',
-                    gap: '1rem'
+                    alignItems: 'center',
+                    height: '100vh',
+                    margin: 0,
+                    backgroundColor: THEME.palette.tertiary.main
                 }}>
                     <div style={{
-                        backgroundColor: THEME.palette.common.black,
-                        color: THEME.palette.common.white,
-                        padding: '1rem',
-                        borderRadius: '5px',
-                        minWidth: '80px'
+                        textAlign: 'center',
+                        backgroundColor: THEME.palette.common.white,
+                        padding: '2rem',
+                        borderRadius: '10px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
                     }}>
                         <div style={{
-                            fontSize: '2.5rem',
-                            fontWeight: 'bold'
-                        }}>{timeLeft.days}</div>
+                            fontSize: '4rem',
+                            marginBottom: '2rem',
+                            color: THEME.palette.common.black
+                        }}>Fantasy Football Lottery</div>
                         <div style={{
-                            fontSize: '0.9rem',
-                            textTransform: 'uppercase',
-                            opacity: 0.8
-                        }}>Days</div>
-                    </div>
-                    <div style={{
-                        backgroundColor: THEME.palette.common.black,
-                        color: THEME.palette.common.white,
-                        padding: '1rem',
-                        borderRadius: '5px',
-                        minWidth: '80px'
-                    }}>
-                        <div style={{
-                            fontSize: '2.5rem',
-                            fontWeight: 'bold'
-                        }}>{timeLeft.hours}</div>
-                        <div style={{
-                            fontSize: '0.9rem',
-                            textTransform: 'uppercase',
-                            opacity: 0.8
-                        }}>Hours</div>
-                    </div>
-                    <div style={{
-                        backgroundColor: THEME.palette.common.black,
-                        color: THEME.palette.common.white,
-                        padding: '1rem',
-                        borderRadius: '5px',
-                        minWidth: '80px'
-                    }}>
-                        <div style={{
-                            fontSize: '2.5rem',
-                            fontWeight: 'bold'
-                        }}>{timeLeft.minutes}</div>
-                        <div style={{
-                            fontSize: '0.9rem',
-                            textTransform: 'uppercase',
-                            opacity: 0.8
-                        }}>Minutes</div>
-                    </div>
-                    <div style={{
-                        backgroundColor: THEME.palette.common.black,
-                        color: THEME.palette.common.white,
-                        padding: '1rem',
-                        borderRadius: '5px',
-                        minWidth: '80px'
-                    }}>
-                        <div style={{
-                            fontSize: '2.5rem',
-                            fontWeight: 'bold'
-                        }}>{timeLeft.seconds}</div>
-                        <div style={{
-                            fontSize: '0.9rem',
-                            textTransform: 'uppercase',
-                            opacity: 0.8
-                        }}>Seconds</div>
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '2rem'
+                        }}>
+                            <div style={{
+                                backgroundColor: THEME.palette.common.black,
+                                color: THEME.palette.common.white,
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
+                            }}>
+                                <div style={{
+                                    fontSize: '5rem',
+                                    fontWeight: 'bold'
+                                }}>{timeLeft.days}</div>
+                                <div style={{
+                                    fontSize: '1.5rem',
+                                    textTransform: 'uppercase',
+                                    opacity: 0.8
+                                }}>Days</div>
+                            </div>
+                            <div style={{
+                                backgroundColor: THEME.palette.common.black,
+                                color: THEME.palette.common.white,
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
+                            }}>
+                                <div style={{
+                                    fontSize: '5rem',
+                                    fontWeight: 'bold'
+                                }}>{timeLeft.hours}</div>
+                                <div style={{
+                                    fontSize: '1.5rem',
+                                    textTransform: 'uppercase',
+                                    opacity: 0.8
+                                }}>Hours</div>
+                            </div>
+                            <div style={{
+                                backgroundColor: THEME.palette.common.black,
+                                color: THEME.palette.common.white,
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
+                            }}>
+                                <div style={{
+                                    fontSize: '5rem',
+                                    fontWeight: 'bold'
+                                }}>{timeLeft.minutes}</div>
+                                <div style={{
+                                    fontSize: '1.5rem',
+                                    textTransform: 'uppercase',
+                                    opacity: 0.8
+                                }}>Minutes</div>
+                            </div>
+                            <div style={{
+                                backgroundColor: THEME.palette.common.black,
+                                color: THEME.palette.common.white,
+                                padding: '2rem',
+                                borderRadius: '10px',
+                                minWidth: '150px'
+                            }}>
+                                <div style={{
+                                    fontSize: '5rem',
+                                    fontWeight: 'bold'
+                                }}>{timeLeft.seconds}</div>
+                                <div style={{
+                                    fontSize: '1.5rem',
+                                    textTransform: 'uppercase',
+                                    opacity: 0.8
+                                }}>Seconds</div>
+                            </div>
+                        </div>
+                        <Button
+                            variant="contained"
+                            onClick={() => navigate('lottery')}
+                            sx={{ marginTop: '20px' }}
+                        >
+                            Go to Lottery
+                        </Button>
                     </div>
                 </div>
-            </div>
-        </div>
+            )}
+            <Outlet />
+        </>
     );
 };

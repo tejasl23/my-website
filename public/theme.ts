@@ -28,6 +28,9 @@ declare module '@mui/material/styles' {
         border: {
             primary: string;
         };
+        navbar: {
+            main: string;
+        };
     }
     interface PaletteOptions {
         tertiary?: PaletteOptions['primary'];
@@ -55,6 +58,9 @@ declare module '@mui/material/styles' {
         };
         border?: {
             primary: string;
+        };
+        navbar?: {
+            main: string;
         };
     }
 }
@@ -115,6 +121,9 @@ export const THEME = createTheme({
         },
         border: {
             primary: '#eee',
+        },
+        navbar: {
+            main: '#CDD0E0',
         }
     },
 });
