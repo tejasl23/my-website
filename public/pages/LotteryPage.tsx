@@ -140,7 +140,7 @@ export const LotteryPage = () => {
 
         if (selectedWinner) {
           setWinner({ name: selectedWinner.name, color: selectedWinner.color });
-          setWinners(prev => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
+          setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
@@ -161,7 +161,7 @@ export const LotteryPage = () => {
           }
           if (fallbackWinner) {
             setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
-            setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
+            setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
             setIsSpinning(false);
             setRemainingSpins(prev => prev - 1);
             setIsModalOpen(true);
