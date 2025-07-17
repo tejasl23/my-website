@@ -123,7 +123,7 @@ export const THEME = createTheme({
             primary: '#eee',
         },
         navbar: {
-            main: '#424242',
+            main: '#CDD0E0',
         }
     },
 });
