@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import ReactModal from 'react-modal';
 import { THEME } from '../theme';
 
 interface Contestant {
@@ -35,6 +36,9 @@ export const LotteryPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(12);
+  const [overflowNames, setOverflowNames] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
 
   // Calculate total weight for probability distribution
   const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
@@ -62,29 +66,43 @@ export const LotteryPage = () => {
     }
 
     // Calculate final rotation to land on the selected segment
-    const segmentAngle = 360 / contestants.length;
-    const finalRotation = baseRotation + (segmentAngle * selectedIndex) + (segmentAngle / 2);
+    let accumulatedAngle = 0;
+    for (let i = 0; i < selectedIndex; i++) {
+      accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
+    }
+    const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
+    const finalRotation = baseRotation + accumulatedAngle + segmentAngle / 2;
 
     setRotation(finalRotation);
     
     setTimeout(() => {
-      const selectedWinner = contestants[selectedIndex].name;
-      setWinner(selectedWinner);
+      const selectedWinner = contestants[selectedIndex];
+      const winnerName = selectedWinner.name;
+      const colors = [
+        THEME.palette.wheel.main, THEME.palette.wheel.secondary, THEME.palette.wheel.tertiary, THEME.palette.wheel.quaternary,
+        THEME.palette.wheel.quinary, THEME.palette.wheel.senary, THEME.palette.wheel.septenary, THEME.palette.wheel.octonary,
+        THEME.palette.wheel.nonary, THEME.palette.wheel.denary, THEME.palette.wheel.undenary, THEME.palette.wheel.duodenary
+      ];
+      const winnerColor = colors[selectedIndex % 12];
+
+      setWinner(winnerName);
+      setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
       setIsSpinning(false);
       setRemainingSpins(prev => prev - 1);
+      setIsModalOpen(true);
       
       // Remove winner and redistribute weights
       setContestants(prev => {
-        const newContestants = prev.filter(c => c.name !== selectedWinner);
+        const newContestants = prev.filter(c => c.name !== winnerName);
         const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
         
         // Redistribute weights proportionally
         return newContestants.map(c => ({
           ...c,
-          currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * prev[selectedIndex].initialWeight
+          currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * selectedWinner.initialWeight
         }));
       });
-    }, 5000); // Match this with CSS transition duration
+    }, 12000); // Match this with CSS transition duration
   };
 
   const resetWheel = () => {
@@ -92,6 +110,7 @@ export const LotteryPage = () => {
     setWinner(null);
     setRotation(0);
     setRemainingSpins(12);
+    setWinners([]);
   };
 
   return (
@@ -99,54 +118,118 @@ export const LotteryPage = () => {
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       
       <DraftContainer>
-        <WheelContainer>
-          <Wheel
-            style={{ transform: `rotate(${rotation}deg)` }}
-            $isSpinning={isSpinning}
-            $segmentCount={contestants.length}
-          >
-            {contestants.map((contestant, index) => (
-              <WheelSegment
-                key={contestant.name}
-                $index={index}
-                $segmentCount={contestants.length}
-                $colorIndex={index % 12}
-              >
-                <SegmentText>{contestant.name}</SegmentText>
-                <SegmentOdds>{Math.round((contestant.currentWeight / totalWeight) * 100)}%</SegmentOdds>
-              </WheelSegment>
+        <div>
+          <WheelContainer>
+            <Wheel
+              style={{ transform: `rotate(${rotation}deg)` }}
+              $isSpinning={isSpinning}
+              $segmentCount={contestants.length}
+            >
+            {(() => {
+              let accumulatedAngle = 0;
+              const newOverflowNames: string[] = [];
+              const segments = contestants.map((contestant, index) => {
+                const percentage = contestant.currentWeight / totalWeight;
+                const arc = percentage * 360;
+                const startAngle = accumulatedAngle;
+                accumulatedAngle += arc;
+
+                const textFits = arc > 15; // Heuristic value, might need adjustment
+                if (!textFits) {
+                  newOverflowNames.push(contestant.name);
+                }
+
+                return (
+                  <WheelSegment
+                    key={contestant.name}
+                    $startAngle={startAngle}
+                    $arc={arc}
+                    $colorIndex={index % 12}
+                  >
+                    {textFits ? (
+                      <>
+                        <SegmentText $arc={arc}>{contestant.name}</SegmentText>
+                        <SegmentOdds $arc={arc}>{Math.round(percentage * 100)}%</SegmentOdds>
+                      </>
+                    ) : (
+                      <Arrow>&#x2794;</Arrow>
+                    )}
+                  </WheelSegment>
+                );
+              });
+
+              // This is a hack to avoid setState in render
+              if (JSON.stringify(overflowNames) !== JSON.stringify(newOverflowNames)) {
+                setTimeout(() => setOverflowNames(newOverflowNames), 0);
+              }
+
+              return segments;
+            })()}
+            </Wheel>
+            <WheelCenter />
+            <SpinPointer />
+          </WheelContainer>
+
+          <Controls>
+            <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
+              {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
+            </SpinButton>
+            <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
+            <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
+          </Controls>
+
+          {overflowNames.length > 0 && (
+            <OverflowList>
+              {overflowNames.map(name => (
+                <OverflowItem key={name}>
+                  <Arrow>&#x2794;</Arrow> {name}
+                </OverflowItem>
+              ))}
+            </OverflowList>
+          )}
+
+        </div>
+
+        <ContestantList>
+          <h3>Remaining Contestants:</h3>
+          <ul>
+            {contestants.map(contestant => (
+              <ContestantItem key={contestant.name}>
+                {contestant.name} - {Math.round((contestant.currentWeight / totalWeight) * 100)}% chance
+              </ContestantItem>
             ))}
-          </Wheel>
-          <WheelCenter />
-          <SpinPointer />
-        </WheelContainer>
-
-        <Controls>
-          <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
-            {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-          </SpinButton>
-          <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
-          <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
-        </Controls>
-
-        {winner && (
-          <WinnerDisplay>
-            <h2>Draft Selection:</h2>
-            <WinnerName>{winner}</WinnerName>
-          </WinnerDisplay>
-        )}
+          </ul>
+        </ContestantList>
       </DraftContainer>
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        style={ModalStyles}
+        contentLabel="Winner Modal"
+      >
+        <h2>The Winner Is...</h2>
+        <WinnerName>{winner}</WinnerName>
+        <ModalCloseButton onClick={() => setIsModalOpen(false)}>Close</ModalCloseButton>
+      </ReactModal>
 
-      <ContestantList>
-        <h3>Remaining Contestants:</h3>
-        <ul>
-          {contestants.map(contestant => (
-            <ContestantItem key={contestant.name}>
-              {contestant.name} - {Math.round((contestant.currentWeight / totalWeight) * 100)}% chance
-            </ContestantItem>
-          ))}
-        </ul>
-      </ContestantList>
+      {winners.length > 0 && (
+        <WinnersTable>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {winners.map((w, i) => (
+              <WinnerRow key={i} $color={w.color}>
+                <td>{i + 1}</td>
+                <td>{w.name}</td>
+              </WinnerRow>
+            ))}
+          </tbody>
+        </WinnersTable>
+      )}
     </PageContainer>
   );
 };
@@ -167,9 +250,9 @@ const Header = styled.h1`
 `;
 
 const DraftContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: 2rem;
   margin-bottom: 2rem;
 `;
@@ -187,16 +270,16 @@ const Wheel = styled.div<{ $isSpinning: boolean; $segmentCount: number }>`
   border-radius: 50%;
   position: relative;
   overflow: hidden;
-  transition: ${props => props.$isSpinning ? 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none'};
+  transition: ${props => props.$isSpinning ? 'transform 12s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none'};
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 `;
 
-const WheelSegment = styled.div<{ $index: number; $segmentCount: number; $colorIndex: number }>`
+const WheelSegment = styled.div<{ $startAngle: number; $arc: number; $colorIndex: number }>`
   position: absolute;
   width: 50%;
   height: 50%;
   transform-origin: bottom right;
-  transform: rotate(${props => (360 / props.$segmentCount) * props.$index}deg) skewY(${props => 90 - (360 / props.$segmentCount)}deg);
+  transform: rotate(${props => props.$startAngle}deg) skewY(${props => 90 - props.$arc}deg);
   background: ${props => {
     const colors = [
       THEME.palette.wheel.main, THEME.palette.wheel.secondary, THEME.palette.wheel.tertiary, THEME.palette.wheel.quaternary,
@@ -212,19 +295,38 @@ const WheelSegment = styled.div<{ $index: number; $segmentCount: number; $colorI
   overflow: hidden;
 `;
 
-const SegmentText = styled.div`
-  transform: skewY(${props => (90 - (360 / 12))}deg) rotate(${props => (360 / 12) / 2}deg);
+const SegmentText = styled.div<{ $arc: number }>`
+  transform: skewY(${props => -(90 - props.$arc)}deg) rotate(${props => props.$arc / 2}deg);
   font-weight: bold;
   color: ${THEME.palette.common.white};
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   font-size: 1.2rem;
 `;
 
-const SegmentOdds = styled.div`
-  transform: skewY(${props => (90 - (360 / 12))}deg) rotate(${props => (360 / 12) / 2}deg);
+const SegmentOdds = styled.div<{ $arc: number }>`
+  transform: skewY(${props => -(90 - props.$arc)}deg) rotate(${props => props.$arc / 2}deg);
   color: ${THEME.palette.common.white};
   font-size: 0.8rem;
   margin-top: 5px;
+`;
+
+const Arrow = styled.div`
+  font-size: 2rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+`;
+
+const OverflowList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1rem;
+`;
+
+const OverflowItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: ${THEME.palette.text.primary};
 `;
 
 const WheelCenter = styled.div`
@@ -329,6 +431,61 @@ const ContestantItem = styled.li`
   list-style-type: none;
   display: flex;
   justify-content: space-between;
+`;
+
+const ModalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: THEME.palette.common.white,
+    borderRadius: '8px',
+    padding: '2rem',
+    textAlign: 'center' as 'center',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+  },
+};
+
+const ModalCloseButton = styled.button`
+  margin-top: 1rem;
+  padding: 8px 16px;
+  background-color: ${THEME.palette.button.primary};
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${THEME.palette.button.quaternary};
+  }
+`;
+
+const WinnersTable = styled.table`
+  width: 100%;
+  margin-top: 2rem;
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid ${THEME.palette.border.primary};
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: ${THEME.palette.quaternary.main};
+    color: ${THEME.palette.common.white};
+  }
+`;
+
+const WinnerRow = styled.tr<{ $color: string }>`
+  background-color: ${props => props.$color};
+  color: ${THEME.palette.common.white};
 `;
 
 export default LotteryPage;
