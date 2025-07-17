@@ -1,3 +1,5 @@
+import { THEME } from "../theme";
+
 /**
  * Renders the home page.
  *
@@ -7,17 +9,17 @@ export const HomePage = () => {
     return (
         <div
             style={{
-                backgroundColor: '#f0f4f8',
+                backgroundColor: THEME.palette.primary.main,
                 fontFamily: 'Arial, sans-serif',
                 textAlign: 'center',
                 paddingTop: '100px',
                 minHeight: '100vh',
             }}
         >
-            <h1 style={{ color: '#333', fontSize: '3rem' }}>
+            <h1 style={{ color: THEME.palette.common.black, fontSize: '3rem' }}>
                 Welcome to Tejas' Website
             </h1>
-            <p style={{ color: '#666', fontSize: '1.25rem' }}>
+            <p style={{ color: THEME.palette.secondary.main, fontSize: '1.25rem' }}>
                 Interesting things to come...
             </p>
         </div>
