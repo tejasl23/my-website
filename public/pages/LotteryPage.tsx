@@ -102,8 +102,6 @@ export const LotteryPage = () => {
 
     ctx.restore();
 
-    console.log('Rotation (degrees):', rotation % 360);
-
   }, [contestants, rotation]);
 
   const spinWheel = () => {
@@ -130,13 +128,7 @@ export const LotteryPage = () => {
       accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
     }
     const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
-    const targetRotation = 360 * (5 + Math.random() * 5) + (360 - (accumulatedAngle + segmentAngle / 2));
-
-    console.log('Selected Winner:', contestants[selectedIndex].name);
-    console.log('Selected Index:', selectedIndex);
-    console.log('Accumulated Angle:', accumulatedAngle);
-    console.log('Segment Angle:', segmentAngle);
-    console.log('Target Rotation:', targetRotation);
+    const targetRotation = 360 * (10 + Math.random() * 5) - (accumulatedAngle + segmentAngle / 2);
 
     const duration = 12000;
     const startTime = performance.now();
