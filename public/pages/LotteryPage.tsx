@@ -127,37 +127,42 @@ export const LotteryPage = () => {
       } else {
         const finalRotation = (startRotation + spinSpeed * (duration / 1000)) % 360;
         const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
+
         let accumulatedAngle = 0;
-        let selectedIndex = 0;
+        let selectedWinner = null;
 
         for (let i = 0; i < contestants.length; i++) {
-          const segmentAngle = (contestants[i].currentWeight / totalWeight) * 360;
-          accumulatedAngle += segmentAngle;
-          if (finalRotation <= accumulatedAngle) {
-            selectedIndex = i;
+          const contestant = contestants[i];
+          const segmentAngle = (contestant.currentWeight / totalWeight) * 360;
+          const endAngle = accumulatedAngle + segmentAngle;
+
+          if (finalRotation >= accumulatedAngle && finalRotation < endAngle) {
+            selectedWinner = contestant;
             break;
           }
+          accumulatedAngle = endAngle;
         }
 
-        const selectedWinner = contestants[selectedIndex];
-        const winnerName = selectedWinner.name;
-        const winnerColor = selectedWinner.color;
+        if (selectedWinner) {
+          const winnerName = selectedWinner.name;
+          const winnerColor = selectedWinner.color;
 
-        setWinner(winnerName);
-        setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
-        setIsSpinning(false);
-        setRemainingSpins(prev => prev - 1);
-        setIsModalOpen(true);
-        
-        setContestants(prev => {
-          const newContestants = prev.filter(c => c.name !== winnerName);
-          const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
+          setWinner(winnerName);
+          setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
+          setIsSpinning(false);
+          setRemainingSpins(prev => prev - 1);
+          setIsModalOpen(true);
 
-          return newContestants.map(c => ({
-            ...c,
-            currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * selectedWinner.initialWeight
-          }));
-        });
+          setContestants(prev => {
+            const newContestants = prev.filter(c => c.name !== winnerName);
+            const totalRemainingWeight = newContestants.reduce((sum, c) => sum + c.initialWeight, 0);
+
+            return newContestants.map(c => ({
+              ...c,
+              currentWeight: c.initialWeight + (c.initialWeight / totalRemainingWeight) * (selectedWinner as Contestant).initialWeight
+            }));
+          });
+        }
       }
     };
 
