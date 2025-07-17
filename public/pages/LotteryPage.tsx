@@ -142,7 +142,7 @@ export const LotteryPage = () => {
           setWinner({ name: selectedWinner.name, color: selectedWinner.color });
           setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
-          setRemainingSpins(prev => prev - 1);
+          setRemainingSpins((prev: number) => prev - 1);
           setIsModalOpen(true);
         } else {
           // Fallback for edge cases where the color is not found
@@ -163,7 +163,7 @@ export const LotteryPage = () => {
             setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
             setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
             setIsSpinning(false);
-            setRemainingSpins(prev => prev - 1);
+            setRemainingSpins((prev: number) => prev - 1);
             setIsModalOpen(true);
           }
         }
