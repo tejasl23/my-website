@@ -35,7 +35,7 @@ export const LotteryPage = () => {
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [winner, setWinner] = useState<{ name: string, color: string } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(12);
@@ -148,7 +148,7 @@ export const LotteryPage = () => {
           const winnerName = selectedWinner.name;
           const winnerColor = selectedWinner.color;
 
-          setWinner(winnerName);
+          setWinner({ name: winnerName, color: winnerColor });
           setWinners(prev => [...prev, { name: winnerName, color: winnerColor }]);
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
@@ -183,9 +183,9 @@ export const LotteryPage = () => {
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       
       <DraftContainer>
-        <div>
+        <div style={{ flex: 1, maxWidth: '400px' }}>
           <WheelContainer>
-            <canvas ref={canvasRef} width="400" height="400" />
+            <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
             <SpinPointer />
           </WheelContainer>
 
@@ -216,7 +216,7 @@ export const LotteryPage = () => {
         contentLabel="Winner Modal"
       >
         <h2>The Winner Is...</h2>
-        <WinnerName>{winner}</WinnerName>
+        <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
         <ModalCloseButton onClick={() => setIsModalOpen(false)}>Close</ModalCloseButton>
       </ReactModal>
 
@@ -258,17 +258,25 @@ const Header = styled.h1`
 `;
 
 const DraftContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
   gap: 2rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const WheelContainer = styled.div`
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  aspect-ratio: 1 / 1;
   margin: 0 auto;
 `;
 
@@ -351,20 +359,25 @@ const WinnerDisplay = styled.div`
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
-const WinnerName = styled.div`
+const WinnerName = styled.div<{ $color?: string }>`
   font-size: 2rem;
-  color: ${THEME.palette.button.primary};
+  color: ${props => props.$color || THEME.palette.button.primary};
   font-weight: bold;
   margin-top: 0.5rem;
 `;
 
 const ContestantList = styled.div`
-  max-width: 600px;
+  flex: 1;
+  max-width: 400px;
   margin: 0 auto;
   background-color: ${THEME.palette.common.white};
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const ContestantItem = styled.li`
