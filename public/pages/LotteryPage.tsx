@@ -102,6 +102,8 @@ export const LotteryPage = () => {
 
     ctx.restore();
 
+    console.log('Rotation (degrees):', rotation % 360);
+
   }, [contestants, rotation]);
 
   const spinWheel = () => {
