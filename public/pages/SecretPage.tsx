@@ -1,7 +1,7 @@
 import { THEME } from "../theme";
 
 /**
- * Renders the home page.
+ * Renders the secret page.
  *
  * @component
  */
