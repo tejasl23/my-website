@@ -110,38 +110,35 @@ export const LotteryPage = () => {
     setIsSpinning(true);
     setWinner(null);
 
-    const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
-    let random = Math.random() * totalWeight;
-    let accumulatedWeight = 0;
-    let selectedIndex = 0;
-
-    for (let i = 0; i < contestants.length; i++) {
-      accumulatedWeight += contestants[i].currentWeight;
-      if (random <= accumulatedWeight) {
-        selectedIndex = i;
-        break;
-      }
-    }
-
-    let accumulatedAngle = 0;
-    for (let i = 0; i < selectedIndex; i++) {
-      accumulatedAngle += (contestants[i].currentWeight / totalWeight) * 360;
-    }
-    const segmentAngle = (contestants[selectedIndex].currentWeight / totalWeight) * 360;
-    const targetRotation = 360 * (10 + Math.random() * 5) - (accumulatedAngle + segmentAngle / 2);
-
     const duration = 12000;
     const startTime = performance.now();
+    const startRotation = rotation;
+    const spinSpeed = 360 * 2; // 2 rotations per second
 
     const animate = (currentTime: number) => {
       const elapsedTime = currentTime - startTime;
       const progress = Math.min(elapsedTime / duration, 1);
       const easedProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-      setRotation(easedProgress * targetRotation);
+
+      setRotation(startRotation + easedProgress * spinSpeed * (duration / 1000));
 
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
+        const finalRotation = (startRotation + spinSpeed * (duration / 1000)) % 360;
+        const totalWeight = contestants.reduce((sum, c) => sum + c.currentWeight, 0);
+        let accumulatedAngle = 0;
+        let selectedIndex = 0;
+
+        for (let i = 0; i < contestants.length; i++) {
+          const segmentAngle = (contestants[i].currentWeight / totalWeight) * 360;
+          accumulatedAngle += segmentAngle;
+          if (finalRotation <= accumulatedAngle) {
+            selectedIndex = i;
+            break;
+          }
+        }
+
         const selectedWinner = contestants[selectedIndex];
         const winnerName = selectedWinner.name;
         const winnerColor = selectedWinner.color;
