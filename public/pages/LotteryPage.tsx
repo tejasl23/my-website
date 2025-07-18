@@ -214,24 +214,28 @@ export const LotteryPage = () => {
                 <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
             </Controls>
         </WheelWrapper>
-        {winners.length > 0 && (
-            <WinnersTable>
-                <thead>
-                    <tr>
-                        <th>Order</th>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {winners.map((w, i) => (
+        <WinnersTable>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {winners.length > 0 ? (
+                    winners.map((w, i) => (
                         <WinnerRow key={i} $color={w.color}>
                             <td>{i + 1}</td>
                             <td>{w.name}</td>
                         </WinnerRow>
-                    ))}
-                </tbody>
-            </WinnersTable>
-        )}
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan={2}>No winners yet!</td>
+                    </tr>
+                )}
+            </tbody>
+        </WinnersTable>
     </FlexRow>
 </DraftContainer>
 <ReactModal
@@ -467,9 +471,10 @@ const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
+  width: 100%;
 `;
 
 const WheelWrapper = styled.div`
