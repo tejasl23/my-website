@@ -13,18 +13,18 @@ interface Contestant {
 
 export const LotteryPage = () => {
   const initialContestants: Contestant[] = [
-    { name: 'Alex', percent: 17.2, color: THEME.palette.wheel.main },
-    { name: 'Jamie', percent: 13.8, color: THEME.palette.wheel.secondary },
-    { name: 'Taylor', percent: 12.1, color: THEME.palette.wheel.tertiary },
-    { name: 'Morgan', percent: 10.3, color: THEME.palette.wheel.quaternary },
-    { name: 'Casey', percent: 8.6, color: THEME.palette.wheel.quinary },
-    { name: 'Riley', percent: 6.9, color: THEME.palette.wheel.senary },
-    { name: 'Jordan', percent: 5.2, color: THEME.palette.wheel.septenary },
-    { name: 'Peyton', percent: 5.2, color: THEME.palette.wheel.octonary },
-    { name: 'Quinn', percent: 3.4, color: THEME.palette.wheel.nonary },
-    { name: 'Avery', percent: 3.4, color: THEME.palette.wheel.denary },
-    { name: 'Skyler', percent: 1.7, color: THEME.palette.wheel.undenary },
-    { name: 'Dakota', percent: 15.6, color: THEME.palette.wheel.duodenary },
+    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main },
+    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary },
+    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary },
+    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary },
+    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary },
+    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary },
+    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary },
+    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary },
+    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary },
+    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary },
+    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary },
+    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
@@ -96,7 +96,7 @@ export const LotteryPage = () => {
     setIsSpinning(true);
     setWinner(null);
 
-    const duration = 10000 + Math.random() * 5000; // 10–15 sec
+    const duration = 10000 + Math.random() * 5000; // 10–20 sec
     const startTime = performance.now();
     const startRotation = rotation;
     const spinSpeed = 360 * 2;
@@ -111,22 +111,17 @@ export const LotteryPage = () => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        const finalRotation = (startRotation + spinSpeed * (duration / 1000));
-        const pointerAngle = (finalRotation + 270) % 360;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-        let accumulatedAngle = 0;
-        let selectedWinner: Contestant | null = null;
+        const pointerY = 35;
+        const pointerX = canvas.width / 2;
+        const pixel = ctx.getImageData(pointerX, pointerY, 1, 1).data;
+        const color = getHexColor([pixel[0], pixel[1], pixel[2]]);
 
-        for (const contestant of contestants) {
-          const segmentAngle = (contestant.percent / 100) * 360;
-          const endAngle = accumulatedAngle + segmentAngle;
-
-          if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
-            selectedWinner = contestant;
-            break;
-          }
-          accumulatedAngle = endAngle;
-        }
+        const selectedWinner = contestants.find(c => c.color.toLowerCase() === color.toLowerCase());
 
         if (selectedWinner) {
           setWinner({ name: selectedWinner.name, color: selectedWinner.color });
@@ -134,11 +129,43 @@ export const LotteryPage = () => {
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
+        } else {
+          // Fallback for edge cases where the color is not found
+          const finalRotation = (startRotation + spinSpeed * (duration / 1000));
+          const pointerAngle = (finalRotation + 270) % 360;
+          let accumulatedAngle = 0;
+          let fallbackWinner: Contestant | null = null;
+          for (const contestant of contestants) {
+            const segmentAngle = (contestant.percent / 100) * 360;
+            const endAngle = accumulatedAngle + segmentAngle;
+            if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
+              fallbackWinner = contestant;
+              break;
+            }
+            accumulatedAngle = endAngle;
+          }
+          if (fallbackWinner) {
+            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
+            setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
+            setIsSpinning(false);
+            setRemainingSpins(prev => prev - 1);
+            setIsModalOpen(true);
+          }
         }
       }
     };
 
     requestAnimationFrame(animate);
+  };
+
+  const removeContestant = (name: string) => {
+    const newContestants = contestants.filter(c => c.name !== name);
+    const totalPercent = newContestants.reduce((acc, c) => acc + c.percent, 0);
+    const updatedContestants = newContestants.map(c => ({
+      ...c,
+      percent: (c.percent / totalPercent) * 100,
+    }));
+    setContestants(updatedContestants);
   };
 
   const resetWheel = () => {
@@ -147,6 +174,13 @@ export const LotteryPage = () => {
     setRotation(0);
     setRemainingSpins(12);
     setWinners([]);
+  };
+
+  const getHexColor = (rgb: number[]) => {
+    return '#' + rgb.map(c => {
+      const hex = c.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
   };
 
   return (
@@ -181,13 +215,23 @@ export const LotteryPage = () => {
 
       <ReactModal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {
+          setIsModalOpen(false);
+          if (winner) {
+            removeContestant(winner.name);
+          }
+        }}
         style={ModalStyles}
         contentLabel="Winner Modal"
       >
         <h2>The Winner Is...</h2>
         <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
-        <ModalCloseButton onClick={() => setIsModalOpen(false)}>Close</ModalCloseButton>
+        <ModalCloseButton onClick={() => {
+          setIsModalOpen(false);
+          if (winner) {
+            removeContestant(winner.name);
+          }
+        }}>Close</ModalCloseButton>
       </ReactModal>
 
       {winners.length > 0 && (
