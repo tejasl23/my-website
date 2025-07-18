@@ -188,6 +188,20 @@ export const LotteryPage = () => {
     }).join('');
   };
 
+  const exportToCsv = () => {
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + "Order,Name\n"
+      + winners.map((w, i) => `${i + 1},${w.name}`).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "lottery_winners.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <PageContainer>
       <ResetButtonContainer>
@@ -219,28 +233,33 @@ export const LotteryPage = () => {
                 <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
             </Controls>
         </WheelWrapper>
-        <WinnersTable>
-            <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                {winners.length > 0 ? (
-                    winners.map((w, i) => (
-                        <WinnerRow key={i} $color={w.color}>
-                            <td>{i + 1}</td>
-                            <td>{w.name}</td>
-                        </WinnerRow>
-                    ))
-                ) : (
+        <WinnersContainer>
+            <WinnersTable>
+                <thead>
                     <tr>
-                        <td colSpan={2}>No winners yet!</td>
+                        <th>Order</th>
+                        <th>Name</th>
                     </tr>
-                )}
-            </tbody>
-        </WinnersTable>
+                </thead>
+                <tbody>
+                    {winners.length > 0 ? (
+                        winners.map((w, i) => (
+                            <WinnerRow key={i} $color={w.color}>
+                                <td>{i + 1}</td>
+                                <td>{w.name}</td>
+                            </WinnerRow>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={2}>No winners yet!</td>
+                        </tr>
+                    )}
+                </tbody>
+            </WinnersTable>
+            {remainingSpins <= 0 && (
+                <ExportButton onClick={exportToCsv}>Export to CSV</ExportButton>
+            )}
+        </WinnersContainer>
     </FlexRow>
 </DraftContainer>
 <ReactModal
@@ -458,10 +477,17 @@ const ModalCloseButton = styled.button`
   }
 `;
 
+const WinnersContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
 const WinnersTable = styled.table`
   flex: 1;
   max-width: 400px;
-  margin-top: 2rem;
+  width: 100%;
   border-collapse: collapse;
 
   th, td {
@@ -473,6 +499,20 @@ const WinnersTable = styled.table`
   th {
     background-color: ${THEME.palette.sleeper.secondary};
     color: ${THEME.palette.sleeper.tertiary};
+  }
+`;
+
+const ExportButton = styled.button`
+  padding: 8px 16px;
+  background-color: ${THEME.palette.button.primary};
+  color: ${THEME.palette.common.white};
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${THEME.palette.sleeper.tertiary};
   }
 `;
 
