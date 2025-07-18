@@ -13,18 +13,18 @@ interface Contestant {
 
 export const LotteryPage = () => {
   const initialContestants: Contestant[] = [
-    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main },
-    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary },
-    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary },
-    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary },
-    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary },
-    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary },
-    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary },
-    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary },
-    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary },
-    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary },
-    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary },
-    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary },
+    { name: 'Grosgab', percent: 17.3, color: '#FF5733' },
+    { name: 'Vikaddy', percent: 13.2, color: '#33FF57' },
+    { name: 'Tac', percent: 12.7, color: '#3357FF' },
+    { name: 'Prote', percent: 12.2, color: '#FF33A1' },
+    { name: 'Sugasnos', percent: 10.7, color: '#A133FF' },
+    { name: 'Roosh', percent: 9.1, color: '#33FFA1' },
+    { name: 'Pratek', percent: 7.6, color: '#FF7F50' },
+    { name: 'Djez', percent: 6.1, color: '#6A5ACD' },
+    { name: 'Moon', percent: 4.6, color: '#20B2AA' },
+    { name: 'Aster', percent: 3.0, color: '#FF4500' },
+    { name: 'Coos', percent: 2.0, color: '#D2691E' },
+    { name: 'Boonx', percent: 1.5, color: '#DC143C' },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
@@ -318,6 +318,8 @@ const WheelContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
   aspect-ratio: 1 / 1;
+  border: 2px solid ${THEME.palette.common.white};
+  border-radius: 50%;
 `;
 
 const SpinPointer = styled.div`
