@@ -18,6 +18,7 @@ export const FantasyPage = () => {
         minutes: '00',
         seconds: '00'
     });
+    const [isTimeUp, setIsTimeUp] = useState(false);
 
     useEffect(() => {
         // Set the target date (July 18, 2025 at 9:00 PM EST)
@@ -35,6 +36,7 @@ export const FantasyPage = () => {
                     minutes: '00',
                     seconds: '00'
                 });
+                setIsTimeUp(true);
                 return;
             }
             
@@ -162,12 +164,17 @@ export const FantasyPage = () => {
                         <Button
                             variant="contained"
                             onClick={() => navigate('lottery')}
+                            disabled={!isTimeUp}
                             sx={{
                                 marginTop: '20px',
                                 backgroundColor: THEME.palette.sleeper.quaternary,
                                 color: THEME.palette.common.black,
                                 '&:hover': {
                                     backgroundColor: THEME.palette.sleeper.tertiary,
+                                },
+                                '&:disabled': {
+                                    backgroundColor: THEME.palette.button.tertiary,
+                                    color: THEME.palette.common.white,
                                 }
                              }}
                         >
