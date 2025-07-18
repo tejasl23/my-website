@@ -9,22 +9,23 @@ interface Contestant {
   name: string;
   percent: number;
   color: string;
+  message: string;
 }
 
 export const LotteryPage = () => {
   const initialContestants: Contestant[] = [
-    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main },
-    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary },
-    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary },
-    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary },
-    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary },
-    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary },
-    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary },
-    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary },
-    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary },
-    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary },
-    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary },
-    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary },
+    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main, message: "Anything has to be better than last season right?" },
+    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary, message: "Please sell on the extra early round picks like 44." },
+    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary, message: "Maybe make the playoffs this year?" },
+    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary, message: "Remember Drew Brees isn\'t in this draft!" },
+    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary, message: "New to the league, new to the toilet bowl." },
+    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary, message: "Phew, CMC is off the board!" },
+    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary, message: "Drafted Pollard, Rice, BTJ, and Hubbard last year. Maybe this time keep your players…" },
+    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary, message: "2025-2026 Froots Fantasy Champion!" },
+    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary, message: "Nico merchant - I HATE MOON."},
+    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary, message: "What/'s the point of even being in the lottery?" },
+    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary, message: "The Cinderella run is over, you ain/'t touching the playoffs this year…" },
+    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary, message: "Last year\'s champ, last year as champ." },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
@@ -190,76 +191,76 @@ export const LotteryPage = () => {
       </ResetButtonContainer>
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       <DraftContainer>
-  <FlexRow>
-    <WheelWrapper>
-      <WheelContainer>
-        <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
-        <SpinPointer />
-      </WheelContainer>
-      <Controls>
-      <div style={{ height: '60px' }} />
-        <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
-          {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-        </SpinButton>
-        <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
-      </Controls>
-    </WheelWrapper>
-
-    <ContestantList>
-      <h3>Remaining Contestants:</h3>
-      <ul>
-        {contestants.map(contestant => (
-          <ContestantItem key={contestant.name}>
-            {contestant.name} – {contestant.percent.toFixed(1)}% chance
-          </ContestantItem>
-        ))}
-      </ul>
-    </ContestantList>
-  </FlexRow>
-</DraftContainer>
-
-
-      <ReactModal
-        isOpen={isModalOpen}
-        onRequestClose={() => {
-          setIsModalOpen(false);
-          if (winner) {
-            removeContestant(winner.name);
-          }
-        }}
-        style={ModalStyles}
-        contentLabel="Winner Modal"
-      >
-        <h2>The Winner Is...</h2>
-        <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
-        <ModalCloseButton onClick={() => {
-          setIsModalOpen(false);
-          if (winner) {
-            removeContestant(winner.name);
-          }
-        }}>Close</ModalCloseButton>
-      </ReactModal>
-
-      {winners.length > 0 && (
+    <FlexRow>
+        <ContestantList>
+            <h3>Remaining Contestants:</h3>
+            <ul>
+                {contestants.map(contestant => (
+                    <ContestantItem key={contestant.name}>
+                        {contestant.name} – {contestant.percent.toFixed(1)}% chance
+                    </ContestantItem>
+                ))}
+            </ul>
+        </ContestantList>
+        <WheelWrapper>
+            <WheelContainer>
+                <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
+                <SpinPointer />
+            </WheelContainer>
+            <Controls>
+                <div style={{ height: '60px' }} />
+                <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
+                    {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
+                </SpinButton>
+                <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
+            </Controls>
+        </WheelWrapper>
         <WinnersTable>
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {winners.map((w, i) => (
-              <WinnerRow key={i} $color={w.color}>
-                <td>{i + 1}</td>
-                <td>{w.name}</td>
-              </WinnerRow>
-            ))}
-          </tbody>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {winners.length > 0 ? (
+                    winners.map((w, i) => (
+                        <WinnerRow key={i} $color={w.color}>
+                            <td>{i + 1}</td>
+                            <td>{w.name}</td>
+                        </WinnerRow>
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan={2}>No winners yet!</td>
+                    </tr>
+                )}
+            </tbody>
         </WinnersTable>
-      )}
-    </PageContainer>
-  );
+    </FlexRow>
+</DraftContainer>
+<ReactModal
+    isOpen={isModalOpen}
+    onRequestClose={() => {
+        setIsModalOpen(false);
+        if (winner) {
+            removeContestant(winner.name);
+        }
+    }}
+    style={ModalStyles}
+    contentLabel="Winner Modal"
+>
+    <h2>The Winner Is...</h2>
+    <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
+    <ModalCloseButton onClick={() => {
+        setIsModalOpen(false);
+        if (winner) {
+            removeContestant(winner.name);
+        }
+    }}>Close</ModalCloseButton>
+</ReactModal>
+</PageContainer>
+);
 };
 
 const PageContainer = styled.div`
@@ -299,9 +300,16 @@ const Header = styled.h1`
 
 const DraftContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 
@@ -311,6 +319,8 @@ const WheelContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
   aspect-ratio: 1 / 1;
+  border: 2px solid ${THEME.palette.common.white};
+  border-radius: 50%;
 `;
 
 const SpinPointer = styled.div`
@@ -438,7 +448,8 @@ const ModalCloseButton = styled.button`
 `;
 
 const WinnersTable = styled.table`
-  width: 100%;
+  flex: 1;
+  max-width: 400px;
   margin-top: 2rem;
   border-collapse: collapse;
 
@@ -463,9 +474,10 @@ const FlexRow = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
+  width: 100%;
 `;
 
 const WheelWrapper = styled.div`
