@@ -132,19 +132,23 @@ export const LotteryPage = () => {
           setIsModalOpen(true);
         } else {
           // Fallback for edge cases where the color is not found
-          const finalRotation = (startRotation + spinSpeed * (duration / 1000));
-          const pointerAngle = (finalRotation + 270) % 360;
-          let accumulatedAngle = 0;
           let fallbackWinner: Contestant | null = null;
-          for (const contestant of contestants) {
-            const segmentAngle = (contestant.percent / 100) * 360;
-            const endAngle = accumulatedAngle + segmentAngle;
-            if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
-              fallbackWinner = contestant;
-              break;
+          let y = pointerY;
+          const initialColor = getHexColor([pixel[0], pixel[1], pixel[2]]);
+
+          while (y < canvas.height) {
+            const newPixel = ctx.getImageData(pointerX, y, 1, 1).data;
+            const newColor = getHexColor([newPixel[0], newPixel[1], newPixel[2]]);
+
+            if (newColor.toLowerCase() !== initialColor.toLowerCase()) {
+              fallbackWinner = contestants.find(c => c.color.toLowerCase() === newColor.toLowerCase()) || null;
+              if (fallbackWinner) {
+                break;
+              }
             }
-            accumulatedAngle = endAngle;
+            y++;
           }
+
           if (fallbackWinner) {
             setWinner({ name: fallbackWinner.name, color: fallbackWinner.color, message: fallbackWinner.message });
             setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
