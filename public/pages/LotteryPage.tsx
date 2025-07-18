@@ -190,76 +190,72 @@ export const LotteryPage = () => {
       </ResetButtonContainer>
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       <DraftContainer>
-  <FlexRow>
-    <WheelWrapper>
-      <WheelContainer>
-        <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
-        <SpinPointer />
-      </WheelContainer>
-      <Controls>
-      <div style={{ height: '60px' }} />
-        <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
-          {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-        </SpinButton>
-        <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
-      </Controls>
-    </WheelWrapper>
-
-    <ContestantList>
-      <h3>Remaining Contestants:</h3>
-      <ul>
-        {contestants.map(contestant => (
-          <ContestantItem key={contestant.name}>
-            {contestant.name} – {contestant.percent.toFixed(1)}% chance
-          </ContestantItem>
-        ))}
-      </ul>
-    </ContestantList>
-  </FlexRow>
+    <FlexRow>
+        <ContestantList>
+            <h3>Remaining Contestants:</h3>
+            <ul>
+                {contestants.map(contestant => (
+                    <ContestantItem key={contestant.name}>
+                        {contestant.name} – {contestant.percent.toFixed(1)}% chance
+                    </ContestantItem>
+                ))}
+            </ul>
+        </ContestantList>
+        <WheelWrapper>
+            <WheelContainer>
+                <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
+                <SpinPointer />
+            </WheelContainer>
+            <Controls>
+                <div style={{ height: '60px' }} />
+                <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
+                    {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
+                </SpinButton>
+                <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
+            </Controls>
+        </WheelWrapper>
+        {winners.length > 0 && (
+            <WinnersTable>
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {winners.map((w, i) => (
+                        <WinnerRow key={i} $color={w.color}>
+                            <td>{i + 1}</td>
+                            <td>{w.name}</td>
+                        </WinnerRow>
+                    ))}
+                </tbody>
+            </WinnersTable>
+        )}
+    </FlexRow>
 </DraftContainer>
-
-
-      <ReactModal
-        isOpen={isModalOpen}
-        onRequestClose={() => {
-          setIsModalOpen(false);
-          if (winner) {
+<ReactModal
+    isOpen={isModalOpen}
+    onRequestClose={() => {
+        setIsModalOpen(false);
+        if (winner) {
             removeContestant(winner.name);
-          }
-        }}
-        style={ModalStyles}
-        contentLabel="Winner Modal"
-      >
-        <h2>The Winner Is...</h2>
-        <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
-        <ModalCloseButton onClick={() => {
-          setIsModalOpen(false);
-          if (winner) {
+        }
+    }}
+    style={ModalStyles}
+    contentLabel="Winner Modal"
+>
+    <h2>The Winner Is...</h2>
+    <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
+    <ModalCloseButton onClick={() => {
+        setIsModalOpen(false);
+        if (winner) {
             removeContestant(winner.name);
-          }
-        }}>Close</ModalCloseButton>
-      </ReactModal>
-
-      {winners.length > 0 && (
-        <WinnersTable>
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {winners.map((w, i) => (
-              <WinnerRow key={i} $color={w.color}>
-                <td>{i + 1}</td>
-                <td>{w.name}</td>
-              </WinnerRow>
-            ))}
-          </tbody>
-        </WinnersTable>
-      )}
-    </PageContainer>
-  );
+        }
+    }}>Close</ModalCloseButton>
+</ReactModal>
+</PageContainer>
+);
 };
 
 const PageContainer = styled.div`
@@ -299,9 +295,16 @@ const Header = styled.h1`
 
 const DraftContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 
@@ -438,7 +441,8 @@ const ModalCloseButton = styled.button`
 `;
 
 const WinnersTable = styled.table`
-  width: 100%;
+  flex: 1;
+  max-width: 400px;
   margin-top: 2rem;
   border-collapse: collapse;
 
