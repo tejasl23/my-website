@@ -187,31 +187,34 @@ export const LotteryPage = () => {
     <PageContainer>
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       <DraftContainer>
-        <div style={{ flex: 1, maxWidth: '700px' }}>
-          <WheelContainer>
-            <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
-            <SpinPointer />
-          </WheelContainer>
-          <Controls>
-            <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
-              {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
-            </SpinButton>
-            <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
-            <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
-          </Controls>
-        </div>
+  <FlexRow>
+    <WheelWrapper>
+      <WheelContainer>
+        <canvas ref={canvasRef} width="400" height="400" style={{ width: '100%', height: '100%' }} />
+        <SpinPointer />
+      </WheelContainer>
+      <Controls>
+        <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
+          {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
+        </SpinButton>
+        <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
+        <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
+      </Controls>
+    </WheelWrapper>
 
-        <ContestantList>
-          <h3>Remaining Contestants:</h3>
-          <ul>
-            {contestants.map(contestant => (
-              <ContestantItem key={contestant.name}>
-                {contestant.name} – {contestant.percent.toFixed(1)}% chance
-              </ContestantItem>
-            ))}
-          </ul>
-        </ContestantList>
-      </DraftContainer>
+    <ContestantList>
+      <h3>Remaining Contestants:</h3>
+      <ul>
+        {contestants.map(contestant => (
+          <ContestantItem key={contestant.name}>
+            {contestant.name} – {contestant.percent.toFixed(1)}% chance
+          </ContestantItem>
+        ))}
+      </ul>
+    </ContestantList>
+  </FlexRow>
+</DraftContainer>
+
 
       <ReactModal
         isOpen={isModalOpen}
@@ -270,19 +273,27 @@ const Header = styled.h1`
   margin-bottom: 2rem;
 `;
 
+// const DraftContainer = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 2rem;
+//   margin-bottom: 2rem;
+
+//   @media (max-width: 768px) {
+//     flex-direction: column;
+//     align-items: center;
+//   }
+// `;
+
 const DraftContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-  }
 `;
+
 
 const WheelContainer = styled.div`
   position: relative;
@@ -437,5 +448,22 @@ const WinnerRow = styled.tr<{ $color: string }>`
   background-color: ${props => props.$color};
   color: ${THEME.palette.sleeper.tertiary};
 `;
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+`;
+
+const WheelWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+`;
+
 
 export default LotteryPage;
