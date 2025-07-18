@@ -29,7 +29,7 @@ export const LotteryPage = () => {
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
-  const [winner, setWinner] = useState<{ name: string, color: string } | null>(null);
+  const [winner, setWinner] = useState<{ name: string, color: string, message: string } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(12);
@@ -117,7 +117,7 @@ export const LotteryPage = () => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const pointerY = 35;
+        const pointerY = 31;
         const pointerX = canvas.width / 2;
         const pixel = ctx.getImageData(pointerX, pointerY, 1, 1).data;
         const color = getHexColor([pixel[0], pixel[1], pixel[2]]);
@@ -125,28 +125,32 @@ export const LotteryPage = () => {
         const selectedWinner = contestants.find(c => c.color.toLowerCase() === color.toLowerCase());
 
         if (selectedWinner) {
-          setWinner({ name: selectedWinner.name, color: selectedWinner.color });
+          setWinner({ name: selectedWinner.name, color: selectedWinner.color, message: selectedWinner.message });
           setWinners(prev => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
         } else {
           // Fallback for edge cases where the color is not found
-          const finalRotation = (startRotation + spinSpeed * (duration / 1000));
-          const pointerAngle = (finalRotation + 270) % 360;
-          let accumulatedAngle = 0;
           let fallbackWinner: Contestant | null = null;
-          for (const contestant of contestants) {
-            const segmentAngle = (contestant.percent / 100) * 360;
-            const endAngle = accumulatedAngle + segmentAngle;
-            if (pointerAngle >= accumulatedAngle && pointerAngle < endAngle) {
-              fallbackWinner = contestant;
-              break;
+          let y = pointerY;
+          const initialColor = getHexColor([pixel[0], pixel[1], pixel[2]]);
+
+          while (y < canvas.height) {
+            const newPixel = ctx.getImageData(pointerX, y, 1, 1).data;
+            const newColor = getHexColor([newPixel[0], newPixel[1], newPixel[2]]);
+
+            if (newColor.toLowerCase() !== initialColor.toLowerCase()) {
+              fallbackWinner = contestants.find(c => c.color.toLowerCase() === newColor.toLowerCase()) || null;
+              if (fallbackWinner) {
+                break;
+              }
             }
-            accumulatedAngle = endAngle;
+            y++;
           }
+
           if (fallbackWinner) {
-            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
+            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color, message: fallbackWinner.message });
             setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
             setIsSpinning(false);
             setRemainingSpins(prev => prev - 1);
@@ -232,7 +236,7 @@ export const LotteryPage = () => {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan={2}>No winners yet!</td>
+                        <td colSpan={2}>Lottery yet to start</td>
                     </tr>
                 )}
             </tbody>
@@ -252,6 +256,7 @@ export const LotteryPage = () => {
 >
     <h2>The Winner Is...</h2>
     <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
+    <WinnerMessage>{winner?.message}</WinnerMessage>
     <ModalCloseButton onClick={() => {
         setIsModalOpen(false);
         if (winner) {
@@ -385,8 +390,15 @@ const RemainingSpins = styled.div`
 const WinnerName = styled.div<{ $color?: string }>`
   font-size: 2rem;
   color: ${props => props.$color || THEME.palette.button.primary};
+  background-color: ${THEME.palette.background.paper};
   font-weight: bold;
   margin-top: 0.5rem;
+`;
+
+const WinnerMessage = styled.p`
+  font-size: 1.2rem;
+  color: ${THEME.palette.sleeper.tertiary};
+  margin-top: 1rem;
 `;
 
 const ContestantList = styled.div`
