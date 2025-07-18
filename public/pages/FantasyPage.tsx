@@ -71,11 +71,11 @@ export const FantasyPage = () => {
                     alignItems: 'center',
                     height: '100vh',
                     margin: 0,
-                    backgroundColor: THEME.palette.tertiary.main
+                    backgroundColor: THEME.palette.sleeper.main
                 }}>
                     <div style={{
                         textAlign: 'center',
-                        backgroundColor: THEME.palette.common.white,
+                        backgroundColor: THEME.palette.sleeper.secondary,
                         padding: '2rem',
                         borderRadius: '10px',
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
@@ -83,7 +83,7 @@ export const FantasyPage = () => {
                         <div style={{
                             fontSize: '4rem',
                             marginBottom: '2rem',
-                            color: THEME.palette.common.black
+                            color: THEME.palette.sleeper.tertiary
                         }}>Fantasy Football Lottery</div>
                         <div style={{
                             display: 'flex',
@@ -91,8 +91,8 @@ export const FantasyPage = () => {
                             gap: '2rem'
                         }}>
                             <div style={{
-                                backgroundColor: THEME.palette.common.black,
-                                color: THEME.palette.common.white,
+                                backgroundColor: THEME.palette.sleeper.main,
+                                color: THEME.palette.sleeper.tertiary,
                                 padding: '2rem',
                                 borderRadius: '10px',
                                 minWidth: '150px'
@@ -108,8 +108,8 @@ export const FantasyPage = () => {
                                 }}>Days</div>
                             </div>
                             <div style={{
-                                backgroundColor: THEME.palette.common.black,
-                                color: THEME.palette.common.white,
+                                backgroundColor: THEME.palette.sleeper.main,
+                                color: THEME.palette.sleeper.tertiary,
                                 padding: '2rem',
                                 borderRadius: '10px',
                                 minWidth: '150px'
@@ -125,8 +125,8 @@ export const FantasyPage = () => {
                                 }}>Hours</div>
                             </div>
                             <div style={{
-                                backgroundColor: THEME.palette.common.black,
-                                color: THEME.palette.common.white,
+                                backgroundColor: THEME.palette.sleeper.main,
+                                color: THEME.palette.sleeper.tertiary,
                                 padding: '2rem',
                                 borderRadius: '10px',
                                 minWidth: '150px'
@@ -142,8 +142,8 @@ export const FantasyPage = () => {
                                 }}>Minutes</div>
                             </div>
                             <div style={{
-                                backgroundColor: THEME.palette.common.black,
-                                color: THEME.palette.common.white,
+                                backgroundColor: THEME.palette.sleeper.main,
+                                color: THEME.palette.sleeper.tertiary,
                                 padding: '2rem',
                                 borderRadius: '10px',
                                 minWidth: '150px'
@@ -162,7 +162,14 @@ export const FantasyPage = () => {
                         <Button
                             variant="contained"
                             onClick={() => navigate('lottery')}
-                            sx={{ marginTop: '20px' }}
+                            sx={{
+                                marginTop: '20px',
+                                backgroundColor: THEME.palette.sleeper.quaternary,
+                                color: THEME.palette.common.black,
+                                '&:hover': {
+                                    backgroundColor: THEME.palette.sleeper.tertiary,
+                                }
+                             }}
                         >
                             Go to Lottery
                         </Button>

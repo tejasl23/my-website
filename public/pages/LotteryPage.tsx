@@ -257,7 +257,7 @@ export const LotteryPage = () => {
 };
 
 const PageContainer = styled.div`
-  background-color: ${THEME.palette.primary.main};
+  background-color: ${THEME.palette.sleeper.main};
   font-family: 'Arial', sans-serif;
   text-align: center;
   padding: 2rem;
@@ -265,7 +265,7 @@ const PageContainer = styled.div`
 `;
 
 const Header = styled.h1`
-  color: ${THEME.palette.quaternary.main};
+  color: ${THEME.palette.sleeper.tertiary};
   font-size: 2.5rem;
   margin-bottom: 2rem;
 `;
@@ -315,15 +315,15 @@ const Controls = styled.div`
 const SpinButton = styled.button`
   padding: 12px 24px;
   font-size: 1.2rem;
-  background-color: ${THEME.palette.button.secondary};
-  color: white;
+  background-color: ${THEME.palette.sleeper.quaternary};
+  color: ${THEME.palette.common.black};
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover:not(:disabled) {
-    background-color: ${THEME.palette.button.quinary};
+    background-color: ${THEME.palette.sleeper.tertiary};
   }
 
   &:disabled {
@@ -335,20 +335,20 @@ const SpinButton = styled.button`
 const ResetButton = styled.button`
   padding: 8px 16px;
   background-color: ${THEME.palette.button.primary};
-  color: white;
+  color: ${THEME.palette.common.white};
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: ${THEME.palette.button.quaternary};
+    background-color: ${THEME.palette.sleeper.tertiary};
   }
 `;
 
 const RemainingSpins = styled.div`
   font-size: 1.1rem;
-  color: ${THEME.palette.text.primary};
+  color: ${THEME.palette.sleeper.tertiary};
 `;
 
 const WinnerName = styled.div<{ $color?: string }>`
@@ -362,10 +362,11 @@ const ContestantList = styled.div`
   flex: 1;
   max-width: 400px;
   margin: 0 auto;
-  background-color: ${THEME.palette.common.white};
+  background-color: ${THEME.palette.sleeper.secondary};
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  color: ${THEME.palette.sleeper.tertiary};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -389,10 +390,11 @@ const ModalStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    backgroundColor: THEME.palette.common.white,
+    backgroundColor: THEME.palette.sleeper.secondary,
     borderRadius: '8px',
     padding: '2rem',
     textAlign: 'center' as 'center',
+    color: THEME.palette.sleeper.tertiary
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -402,15 +404,15 @@ const ModalStyles = {
 const ModalCloseButton = styled.button`
   margin-top: 1rem;
   padding: 8px 16px;
-  background-color: ${THEME.palette.button.primary};
-  color: white;
+  background-color: ${THEME.palette.sleeper.quaternary};
+  color: ${THEME.palette.common.black};
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: ${THEME.palette.button.quaternary};
+    background-color: ${THEME.palette.sleeper.tertiary};
   }
 `;
 
@@ -420,20 +422,20 @@ const WinnersTable = styled.table`
   border-collapse: collapse;
 
   th, td {
-    border: 1px solid ${THEME.palette.border.primary};
+    border: 1px solid ${THEME.palette.sleeper.tertiary};
     padding: 8px;
     text-align: left;
   }
 
   th {
-    background-color: ${THEME.palette.quaternary.main};
-    color: ${THEME.palette.common.white};
+    background-color: ${THEME.palette.sleeper.secondary};
+    color: ${THEME.palette.sleeper.tertiary};
   }
 `;
 
 const WinnerRow = styled.tr<{ $color: string }>`
   background-color: ${props => props.$color};
-  color: ${THEME.palette.common.white};
+  color: ${THEME.palette.sleeper.tertiary};
 `;
 
 export default LotteryPage;
