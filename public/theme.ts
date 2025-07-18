@@ -31,6 +31,12 @@ declare module '@mui/material/styles' {
         navbar: {
             main: string;
         };
+        sleeper: {
+            main: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+        };
     }
     interface PaletteOptions {
         tertiary?: PaletteOptions['primary'];
@@ -124,6 +130,12 @@ export const THEME = createTheme({
         },
         navbar: {
             main: '#CDD0E0',
+        },
+        sleeper: {
+            main: '#121428',
+            secondary: '#1A1D3A',
+            tertiary: '#E5E9F2',
+            quaternary: '#00F0FF',
         }
     },
 });
