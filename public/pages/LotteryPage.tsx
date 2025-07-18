@@ -9,22 +9,23 @@ interface Contestant {
   name: string;
   percent: number;
   color: string;
+  message: string;
 }
 
 export const LotteryPage = () => {
   const initialContestants: Contestant[] = [
-    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main },
-    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary },
-    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary },
-    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary },
-    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary },
-    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary },
-    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary },
-    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary },
-    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary },
-    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary },
-    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary },
-    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary },
+    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main, message: "Anything has to be better than last season right?" },
+    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary, message: "Please sell on the extra early round picks like 44." },
+    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary, message: "Maybe make the playoffs this year?" },
+    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary, message: "Remember Drew Brees isn\'t in this draft!" },
+    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary, message: "New to the league, new to the toilet bowl." },
+    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary, message: "Phew, CMC is off the board!" },
+    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary, message: "Drafted Pollard, Rice, BTJ, and Hubbard last year. Maybe this time keep your players…" },
+    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary, message: "2025-2026 Froots Fantasy Champion!" },
+    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary, message: "Nico merchant - I HATE MOON."},
+    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary, message: "What/'s the point of even being in the lottery?" },
+    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary, message: "The Cinderella run is over, you ain/'t touching the playoffs this year…" },
+    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary, message: "Last year\'s champ, last year as champ." },
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
