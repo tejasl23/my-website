@@ -29,7 +29,7 @@ export const LotteryPage = () => {
   ];
 
   const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
-  const [winner, setWinner] = useState<{ name: string, color: string } | null>(null);
+  const [winner, setWinner] = useState<{ name: string, color: string, message: string } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [remainingSpins, setRemainingSpins] = useState(12);
@@ -125,7 +125,7 @@ export const LotteryPage = () => {
         const selectedWinner = contestants.find(c => c.color.toLowerCase() === color.toLowerCase());
 
         if (selectedWinner) {
-          setWinner({ name: selectedWinner.name, color: selectedWinner.color });
+          setWinner({ name: selectedWinner.name, color: selectedWinner.color, message: selectedWinner.message });
           setWinners(prev => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
           setRemainingSpins(prev => prev - 1);
@@ -146,7 +146,7 @@ export const LotteryPage = () => {
             accumulatedAngle = endAngle;
           }
           if (fallbackWinner) {
-            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
+            setWinner({ name: fallbackWinner.name, color: fallbackWinner.color, message: fallbackWinner.message });
             setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
             setIsSpinning(false);
             setRemainingSpins(prev => prev - 1);
@@ -252,6 +252,7 @@ export const LotteryPage = () => {
 >
     <h2>The Winner Is...</h2>
     <WinnerName $color={winner?.color}>{winner?.name}</WinnerName>
+    <WinnerMessage>{winner?.message}</WinnerMessage>
     <ModalCloseButton onClick={() => {
         setIsModalOpen(false);
         if (winner) {
@@ -387,6 +388,12 @@ const WinnerName = styled.div<{ $color?: string }>`
   color: ${props => props.$color || THEME.palette.button.primary};
   font-weight: bold;
   margin-top: 0.5rem;
+`;
+
+const WinnerMessage = styled.p`
+  font-size: 1.2rem;
+  color: ${THEME.palette.sleeper.tertiary};
+  margin-top: 1rem;
 `;
 
 const ContestantList = styled.div`
