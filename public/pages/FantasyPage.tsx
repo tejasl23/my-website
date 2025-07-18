@@ -70,11 +70,13 @@ export const FantasyPage = () => {
                     fontFamily: 'Arial, sans-serif',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100vh',
+                    alignItems: 'flex-start',
+                    minHeight: '100vh',
+                    paddingTop: '150px',
                     margin: 0,
                     backgroundColor: THEME.palette.sleeper.main
                 }}>
+                
                     <div style={{
                         textAlign: 'center',
                         backgroundColor: THEME.palette.sleeper.secondary,
