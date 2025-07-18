@@ -117,7 +117,7 @@ export const LotteryPage = () => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const pointerY = 35;
+        const pointerY = 31;
         const pointerX = canvas.width / 2;
         const pixel = ctx.getImageData(pointerX, pointerY, 1, 1).data;
         const color = getHexColor([pixel[0], pixel[1], pixel[2]]);
