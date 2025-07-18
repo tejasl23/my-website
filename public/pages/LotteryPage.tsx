@@ -334,8 +334,8 @@ const SpinButton = styled.button`
 
 const ResetButton = styled.button`
   padding: 8px 16px;
-  background-color: ${THEME.palette.sleeper.quaternary};
-  color: ${THEME.palette.common.black};
+  background-color: ${THEME.palette.button.primary};
+  color: ${THEME.palette.common.white};
   border: none;
   border-radius: 5px;
   cursor: pointer;

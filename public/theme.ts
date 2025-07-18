@@ -68,6 +68,12 @@ declare module '@mui/material/styles' {
         navbar?: {
             main: string;
         };
+        sleeper: {
+            main: string;
+            secondary: string;
+            tertiary: string;
+            quaternary: string;
+        };
     }
 }
 
