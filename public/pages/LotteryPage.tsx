@@ -185,6 +185,9 @@ export const LotteryPage = () => {
 
   return (
     <PageContainer>
+      <ResetButtonContainer>
+        <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
+      </ResetButtonContainer>
       <Header>Welcome to the 2025 Fantasy Draft</Header>
       <DraftContainer>
   <FlexRow>
@@ -194,11 +197,11 @@ export const LotteryPage = () => {
         <SpinPointer />
       </WheelContainer>
       <Controls>
+      <div style={{ height: '60px' }} />
         <SpinButton onClick={spinWheel} disabled={isSpinning || remainingSpins <= 0}>
           {remainingSpins <= 0 ? 'Draft Complete!' : 'Spin Wheel'}
         </SpinButton>
         <RemainingSpins>Spins remaining: {remainingSpins}</RemainingSpins>
-        <ResetButton onClick={resetWheel}>Reset Draft</ResetButton>
       </Controls>
     </WheelWrapper>
 
@@ -265,6 +268,13 @@ const PageContainer = styled.div`
   text-align: center;
   padding: 2rem;
   min-height: 100vh;
+  position: relative;
+`;
+
+const ResetButtonContainer = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 `;
 
 const Header = styled.h1`
