@@ -13,43 +13,28 @@ interface Contestant {
 
 export const LotteryPage = () => {
   const initialContestants: Contestant[] = [
-    { name: 'Alex', percent: 17.2, color: THEME.palette.wheel.main },
-    { name: 'Jamie', percent: 13.8, color: THEME.palette.wheel.secondary },
-    { name: 'Taylor', percent: 12.1, color: THEME.palette.wheel.tertiary },
-    { name: 'Morgan', percent: 10.3, color: THEME.palette.wheel.quaternary },
-    { name: 'Casey', percent: 8.6, color: THEME.palette.wheel.quinary },
-    { name: 'Riley', percent: 6.9, color: THEME.palette.wheel.senary },
-    { name: 'Jordan', percent: 5.2, color: THEME.palette.wheel.septenary },
-    { name: 'Peyton', percent: 5.2, color: THEME.palette.wheel.octonary },
-    { name: 'Quinn', percent: 3.4, color: THEME.palette.wheel.nonary },
-    { name: 'Avery', percent: 3.4, color: THEME.palette.wheel.denary },
-    { name: 'Skyler', percent: 1.7, color: THEME.palette.wheel.undenary },
-    { name: 'Dakota', percent: 15.6, color: THEME.palette.wheel.duodenary },
+    { name: 'Grosgab', percent: 17.3, color: THEME.palette.wheel.main },
+    { name: 'Vikaddy', percent: 13.2, color: THEME.palette.wheel.secondary },
+    { name: 'Tac', percent: 12.7, color: THEME.palette.wheel.tertiary },
+    { name: 'Prote', percent: 12.2, color: THEME.palette.wheel.quaternary },
+    { name: 'Sugasnos', percent: 10.7, color: THEME.palette.wheel.quinary },
+    { name: 'Roosh', percent: 9.1, color: THEME.palette.wheel.senary },
+    { name: 'Pratek', percent: 7.6, color: THEME.palette.wheel.septenary },
+    { name: 'Djez', percent: 6.1, color: THEME.palette.wheel.octonary },
+    { name: 'Moon', percent: 4.6, color: THEME.palette.wheel.nonary },
+    { name: 'Aster', percent: 3.0, color: THEME.palette.wheel.denary },
+    { name: 'Coos', percent: 2.0, color: THEME.palette.wheel.undenary },
+    { name: 'Boonx', percent: 1.5, color: THEME.palette.wheel.duodenary },
   ];
 
-  const [contestants, setContestants] = useState<Contestant[]>(() => {
-    const savedContestants = localStorage.getItem('contestants');
-    return savedContestants ? JSON.parse(savedContestants) : initialContestants;
-  });
+  const [contestants, setContestants] = useState<Contestant[]>(initialContestants);
   const [winner, setWinner] = useState<{ name: string, color: string } | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const [remainingSpins, setRemainingSpins] = useState(() => {
-    const savedRemainingSpins = localStorage.getItem('remainingSpins');
-    return savedRemainingSpins ? JSON.parse(savedRemainingSpins) : 12;
-  });
+  const [remainingSpins, setRemainingSpins] = useState(12);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [winners, setWinners] = useState<{ name: string, color: string }[]>(() => {
-    const savedWinners = localStorage.getItem('winners');
-    return savedWinners ? JSON.parse(savedWinners) : [];
-  });
+  const [winners, setWinners] = useState<{ name: string, color: string }[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    localStorage.setItem('contestants', JSON.stringify(contestants));
-    localStorage.setItem('remainingSpins', JSON.stringify(remainingSpins));
-    localStorage.setItem('winners', JSON.stringify(winners));
-  }, [contestants, remainingSpins, winners]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -111,7 +96,7 @@ export const LotteryPage = () => {
     setIsSpinning(true);
     setWinner(null);
 
-    const duration = 10000 + Math.random() * 5000; // 10–15 sec
+    const duration = 10000 + Math.random() * 5000; // 10–20 sec
     const startTime = performance.now();
     const startRotation = rotation;
     const spinSpeed = 360 * 2;
@@ -140,9 +125,9 @@ export const LotteryPage = () => {
 
         if (selectedWinner) {
           setWinner({ name: selectedWinner.name, color: selectedWinner.color });
-          setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
+          setWinners(prev => [...prev, { name: selectedWinner!.name, color: selectedWinner!.color }]);
           setIsSpinning(false);
-          setRemainingSpins((prev: number) => prev - 1);
+          setRemainingSpins(prev => prev - 1);
           setIsModalOpen(true);
         } else {
           // Fallback for edge cases where the color is not found
@@ -161,9 +146,9 @@ export const LotteryPage = () => {
           }
           if (fallbackWinner) {
             setWinner({ name: fallbackWinner.name, color: fallbackWinner.color });
-            setWinners((prev: { name: string; color: string; }[]) => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
+            setWinners(prev => [...prev, { name: fallbackWinner!.name, color: fallbackWinner!.color }]);
             setIsSpinning(false);
-            setRemainingSpins((prev: number) => prev - 1);
+            setRemainingSpins(prev => prev - 1);
             setIsModalOpen(true);
           }
         }
@@ -200,7 +185,7 @@ export const LotteryPage = () => {
 
   return (
     <PageContainer>
-      <Header>{remainingSpins > 0 ? 'Welcome to the 2025 Fantasy Draft' : 'Froots 2025 Fantasy'}</Header>
+      <Header>Welcome to the 2025 Fantasy Draft</Header>
       <DraftContainer>
         <div style={{ flex: 1, maxWidth: '700px' }}>
           <WheelContainer>
